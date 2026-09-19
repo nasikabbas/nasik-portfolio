@@ -1,6 +1,6 @@
 # nasik-portfolio
 
-Portfolio, case studies and résumé system for **Syed Nasik Abbas**, generated from a single source of
+Portfolio, case studies and résumé system for **Nasik Abbas**, generated from a single source of
 truth and published at **[nasikabbas.com](https://nasikabbas.com)**.
 
 Status: **scaffold**. The guardrails and the deploy path are in place; content is set once positioning
@@ -56,8 +56,11 @@ scripts/check-profile.ts   the provenance gate
 .github/workflows/deploy.yml  Pages deploy on main
 ```
 
-Private, never tracked (see `.gitignore`): `transition/` (career and financial planning),
-`source-material/` (confidential decks and personal essays), `.wh/` (private working area).
+Private, and deliberately **not** listed in the tracked `.gitignore`: `.wh/` (the private working
+area, which holds the career and financial planning) and `source-material/` (confidential decks and
+reference documents). Both are excluded via `.git/info/exclude`, which is local and never tracked — a
+tracked ignore file in a public repository publishes the shape of a private convention to everyone who
+clones it, which is a small disclosure and an avoidable one.
 
 ## Commands
 
