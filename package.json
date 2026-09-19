@@ -1,6 +1,6 @@
 {
   "name": "nasik-portfolio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Portfolio, case studies and resume system for Nasik Abbas, generated from a single source of truth.",
