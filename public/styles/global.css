@@ -1,0 +1,53 @@
+/* Provisional. The real design register is set with the content, not before it.
+   This exists so the holding page is legible and the deploy path is testable. */
+:root {
+  --paper: #fcfcfa;
+  --ink: #16161a;
+  --ink-muted: #56565e;
+  --rule: #e4e2dc;
+  --accent: #1f4f8b;
+  --measure: 36rem;
+  --page: 58rem;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121214;
+    --ink: #ececef;
+    --ink-muted: #9b9ba4;
+    --rule: #2c2c31;
+    --accent: #8fb6e8;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1.0625rem/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.page { max-width: var(--page); margin: 0 auto; padding: clamp(1.5rem, 1rem + 2vw, 4rem) 1rem; }
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { position: static; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.eyebrow {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--ink-muted); margin: 0 0 0.5rem;
+}
+h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem); line-height: 1.1; margin: 0 0 0.75rem; letter-spacing: -0.02em; text-wrap: balance; }
+h2 { font-size: 1.25rem; margin: 0 0 1.5rem; letter-spacing: -0.01em; }
+.lede { font-size: 1.15rem; max-width: var(--measure); color: var(--ink); margin: 0 0 1rem; text-wrap: pretty; }
+.contact a { color: var(--accent); }
+.section { border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 2rem; }
+.evidence { display: grid; gap: 2rem; margin: 0; }
+.evidence__item { display: grid; gap: 0.35rem; }
+.evidence__figure { font-size: 2rem; font-weight: 650; line-height: 1; letter-spacing: -0.03em; color: var(--accent); }
+.evidence dd { margin: 0; }
+.evidence__label { margin: 0; max-width: var(--measure); }
+.evidence__note { margin: 0.4rem 0 0; color: var(--ink-muted); max-width: var(--measure); }
+.evidence__caveat {
+  margin: 0.6rem 0 0; padding: 0.6rem 0.8rem; max-width: var(--measure);
+  border-left: 3px solid var(--rule); background: color-mix(in srgb, var(--ink) 4%, transparent);
+  font-size: 0.94rem; color: var(--ink-muted);
+}
+.colophon { border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 1.5rem; color: var(--ink-muted); font-size: 0.94rem; max-width: var(--measure); }

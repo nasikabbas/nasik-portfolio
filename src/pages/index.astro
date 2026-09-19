@@ -1,0 +1,82 @@
+---
+/**
+ * Holding page.
+ *
+ * Content and layout are deliberately provisional — they are set once positioning fixes
+ * the case studies. What is *not* provisional is the rendering contract this page proves:
+ * every figure comes from `data/profile.yaml` through the provenance schema, and a figure
+ * carrying a `caveat` renders that caveat beside it. That obligation is exercised here
+ * from the first commit, so the renderer is never written against data that has already
+ * learned to live without it.
+ */
+import { parse } from 'yaml';
+
+import { SITE_URL } from '../config/site';
+import { ProfileSchema } from '../schema/profile';
+
+// Import as raw text so the YAML is bundled with the page. Resolving it from disk at
+// build time works locally and then fails in the prerender chunk, where a module-relative
+// path resolves nowhere — a trap already documented once in a sibling project.
+const raw = (await import('../../data/profile.yaml?raw')).default;
+const profile = ProfileSchema.parse(parse(raw));
+
+const { person, evidence } = profile;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{person.name} — {person.headline}</title>
+    <meta name="description" content={person.headline} />
+    <link rel="canonical" href={SITE_URL} />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <main id="main" class="page">
+      <header class="masthead">
+        <p class="eyebrow">{person.location}</p>
+        <h1>{person.name}</h1>
+        <p class="lede">{person.headline}</p>
+        <p class="contact">
+          <a href={`mailto:${person.email}`}>{person.email}</a>
+        </p>
+      </header>
+
+      <section class="section" aria-labelledby="evidence-heading">
+        <h2 id="evidence-heading">Evidence</h2>
+        <dl class="evidence">
+          {
+            evidence.map((point) =>
+              point.figure.state === 'verified' ? (
+                <div class="evidence__item">
+                  <dt class="evidence__figure">{point.figure.value}</dt>
+                  <dd>
+                    <p class="evidence__label">{point.label}</p>
+                    {point.note?.state !== 'missing' && point.note !== undefined && (
+                      <p class="evidence__note">{point.note.value}</p>
+                    )}
+                    {point.figure.caveat !== undefined && (
+                      <p class="evidence__caveat">
+                        <strong>Limit:</strong> {point.figure.caveat}
+                      </p>
+                    )}
+                  </dd>
+                </div>
+              ) : null,
+            )
+          }
+        </dl>
+      </section>
+
+      <footer class="colophon">
+        <p>
+          Every figure on this site is traced to a source, and a figure that would mislead
+          on its own carries its limit beside it. Both are enforced at build time.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

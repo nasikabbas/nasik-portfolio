@@ -1,0 +1,15 @@
+# Private working area — never tracked in this repo.
+.wh/
+
+# Confidential source material: Spectre investor deck, Pollen employer
+# material, personal essays. Inputs to the portfolio, never published with it.
+source-material/
+transition/
+
+# Node / Astro
+node_modules/
+dist/
+.astro/
+.DS_Store
+dist/
+node_modules/

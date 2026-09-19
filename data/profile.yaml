@@ -1,0 +1,75 @@
+# Single source of truth. Every published surface is generated from this file.
+#
+# Provenance rules (enforced by src/schema/claim.ts, checked by scripts/check-profile.ts):
+#   - `figure` uses strictClaim: there is NO `assumed` state. A number that has not been
+#     traced to a source cannot be written here at all — the build fails at parse time.
+#   - `basis` records where the figure came from, so a reader or an interviewer can check it.
+#   - `caveat` is a limit that travels with the value and must be rendered wherever the
+#     value is. Use it when a true number would mislead on its own.
+#
+# Content is deliberately minimal until positioning fixes the case studies. The point of
+# landing it now is that the rules are load-bearing from the first commit.
+
+person:
+  name: Syed Nasik Abbas
+  headline: Production AI engineer — making AI systems work in real operating conditions
+  email: syed.nasik.abbas@gmail.com
+  location: Islamabad, Pakistan
+  pronouns: he/him
+
+evidence:
+  - label: Production releases shipped on the PadelGPT platform
+    figure:
+      state: verified
+      value: '33'
+      basis: >-
+        CHANGELOG.md in the padelosai repository, versions 1.0.0 through 1.15.3, promoted
+        through main -> staging -> release -> prod.
+
+  - label: Tools exposed to the agent tree across two MCP servers
+    figure:
+      state: verified
+      value: '169'
+      basis: >-
+        mcp_info.md in the padelosai repository: 102 admin and 67 player tools, reached
+        in-process via FastMCPTransport and over HTTP for white-label consumers.
+
+  - label: Real support conversations in the evaluation corpus
+    figure:
+      state: verified
+      value: '1,280'
+      basis: >-
+        Phase 1 extraction into the evals corpus database — 5,434 messages across 15 clubs
+        over a 118-day window, every one a two-sided thread with a human reply to compare against.
+
+  - label: Share of support volume that needed an answer, not an action
+    figure:
+      state: verified
+      value: '67.8%'
+      basis: >-
+        Capability-gap classification over 1,268 labelled conversations. Judge-independent:
+        the model extracted only observable facts and code decided capability from the
+        verified route and tool inventory.
+    note:
+      state: verified
+      value: >-
+        The finding that reframed the project: the two largest blockers were self-service
+        gaps in the product, not gaps in the AI.
+
+  - label: PadelGPT win rate against human club support
+    figure:
+      state: verified
+      value: '65.1%'
+      basis: >-
+        83 scored turns, judge v3 on o3, 95% confidence interval [54.3, 74.4].
+      caveat: >-
+        Measured but not validated — the LLM judge failed human calibration at Cohen's
+        kappa -0.170, below chance, so this figure is reported for method and not as a
+        result. The capability-gap analysis above does not depend on the judge.
+
+  - label: Commits authored on the PadelGPT codebase
+    figure:
+      state: verified
+      value: '565 of 703'
+      basis: >-
+        git shortlog -sn --all on the padelosai repository, across 53,706 lines of Python.
