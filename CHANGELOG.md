@@ -15,6 +15,8 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-09-26
+
 ### Changed
 - Claude Code's own commit attribution is switched off in `.claude/settings.json`, so commits stay
   anonymous by setting, not only by convention.
