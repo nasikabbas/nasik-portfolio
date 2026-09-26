@@ -88,7 +88,8 @@ curl -s -o /dev/null -w '%{http_code}\n' https://nasikabbas.com/styles/global.cs
 ## Git, versioning, deploy
 
 - **Commits are anonymous** — no `Co-Authored-By`, no tool attribution. Authorship lives in git
-  metadata, not the message. Imperative, `type: summary`, the *why* in the body, one focused commit per
+  metadata, not the message. `.claude/settings.json` blanks Claude Code's own attribution, so the
+  harness adds none either. Imperative, `type: summary`, the *why* in the body, one focused commit per
   logical change.
 - **Branch** for anything substantial; trivial one-liners can go to `main`.
 - **Never force-push or rewrite history** without asking. Never delete a branch — err toward keeping
