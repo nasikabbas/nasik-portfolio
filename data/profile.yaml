@@ -447,14 +447,14 @@ roles:
   - id: padelos
     org: PadelOS
     about: Software that padel clubs use to run bookings, payments and their player app. Based in Amsterdam.
-    period: 2024 – present
+    period: Jan 2024 – present
     basis: >-
       His own account; the public PadelGPT report; the PadelGPT repository's agent, tool-server,
       retrieval and release documentation; the production usage exports; the Pollen
       architecture deck and device-configuration files.
     positions:
       - title: Applied AI Lead, PadelGPT
-        period: 2025 – present
+        period: Jan 2025 – present
         about: >-
           PadelGPT is the AI assistant inside PadelOS. It answers players in their own language,
           at any hour, from each club's live bookings, prices and rules.
@@ -497,7 +497,7 @@ roles:
             {pg_releases} versioned releases in {pg_release_span}, promoted main → staging →
             release → prod. Authored {pg_commits} commits in the repository.
       - title: Product Manager, Pollen
-        period: 2024 – 2025
+        period: Jan 2024 – Jan 2025
         about: >-
           Pollen tracked food from farm to shop in Saudi Arabia, so supply problems and spoilage
           could be caught early. It was built at Moonlabor, the company PadelOS was later spun
@@ -532,36 +532,36 @@ roles:
   - id: founder
     org: Founder
     about: Three companies in three years, in property investing, education and medical technology.
-    period: 2021 – 2023
+    period: Apr 2021 – Dec 2023
     basis: >-
       The Spectre Bionics investor deck (May 2023); his own account of each venture; the InGrain decks
       (Oct–Nov 2021); his answers of 2026-09-19 and 2026-09-27.
     positions:
       - title: Founder and CEO
         org: Spectre Bionics
-        period: '2023'
+        period: Jan – Dec 2023
         about: A medical-technology startup working to restore sight through a brain‑computer interface.
         plain:
           - Its first product let people with paralysis control a computer with their eyes.
-          - Built the research team, starting with a prospective co-founder from MIT.
+          - Built the research team, starting with a prospective co‑founder from MIT.
           - >-
-            Closed it in 2023: a company like this needs a full-time technical co-founder, and it
+            Closed it in 2023: a company like this needs a full-time technical co‑founder, and it
             never had one.
         technical:
           - >-
             Isaac-1, an MVP that lets quadriplegic users control digital devices with eye
             movement — the first step toward the visor the full system needs.
           - >-
-            Built the research team around a prospective co-founder, a postdoctoral researcher at
+            Built the research team around a prospective co‑founder, a postdoctoral researcher at
             MIT, and grew it from there. The concept: a wearable visor and camera, a high-bandwidth
             wireless link, and an electrode array in the visual cortex that produces a spatial
             pattern of phosphenes.
           - >-
             Closed in 2023: a brain–computer interface company needs a full-time technical
-            co-founder, and it never had one.
+            co‑founder, and it never had one.
       - title: Technical Co-founder
         org: Schooling Studio
-        period: 2021 – 2023
+        period: Apr 2021 – Mar 2023
         about: >-
           An AI maths tutor for school students: photograph a question and get the solution,
           explained step by step.
@@ -581,7 +581,7 @@ roles:
             software credits (AWS, Segment, Mixpanel, Intercom) to fund the build.
       - title: Founder
         org: InGrain
-        period: '2021'
+        period: Sep – Dec 2021
         about: An app for investing in property from a few dollars.
         plain:
           - "{ingrain_waitlist} people joined the waiting list in under three months, before launch."
@@ -598,14 +598,14 @@ roles:
   - id: gat
     org: GAT Consulting
     about: A management consultancy working for government bodies and manufacturers.
-    period: 2018 – 2021
+    period: Jan 2018 – Mar 2021
     basis: >-
       His own account; the four TUSDEC reports and their TORs; the cutlery interim report
       (TUSDEC, 17 May 2019) and options paper (PIDC, Oct 2020); the manufacturer's process
       documents (11 Jan 2019); his account of his role, 2026-09-27.
     positions:
       - title: Business Transformation Consultant
-        period: 2018 – 2021
+        period: Jan 2018 – Mar 2021
         plain:
           - >-
             Built the reports end to end — field research, analysis and financial models — for
@@ -662,11 +662,11 @@ roles:
   - id: trillium
     org: Trillium Pakistan
     about: A distributor of solar power, aviation and underwater systems for oil and gas, telecom and defence clients.
-    period: 2016 – 2017
+    period: Oct 2016 – Oct 2017
     basis: His own account; his training binder (TU Delft and IRENA material, annotated).
     positions:
       - title: Trainee Engineer, solar power
-        period: 2016 – 2017
+        period: Oct 2016 – Oct 2017
         plain:
           - >-
             Solar power systems for oil and gas, telecom and defence clients, from design and
@@ -694,11 +694,11 @@ roles:
   - id: unilever
     org: Unilever Pakistan
     about: A university internship programme at the consumer-goods company's ice-cream plant.
-    period: '2014'
+    period: Jun – Aug 2014
     basis: His own account of the internship.
     positions:
       - title: Intern, Manufacturing Excellence
-        period: Summer 2014
+        period: Jun – Aug 2014
         plain:
           - >-
             Joined the Manufacturing Excellence team as the plant moved to World Class
