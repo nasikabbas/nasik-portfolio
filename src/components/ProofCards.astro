@@ -1,0 +1,50 @@
+---
+/**
+ * A row of proof cards: one big figure each, with a plain label.
+ *
+ * Cards arrive resolved (`resolveProof` in the page frontmatter). A caveated figure shows its
+ * limit inside the card, and a figure with a public source links to it, so anyone can check
+ * the number without asking.
+ */
+import type { CardView } from '../lib/view';
+
+import Rich from './Rich.astro';
+
+interface Props {
+  cards: CardView[];
+}
+
+const { cards } = Astro.props;
+---
+
+<ul class="proof">
+  {
+    cards.map((card) => (
+      <li class="card">
+        <span class="card__tag">{card.tag}</span>
+        <p class="card__value">
+          {card.values[0]}
+          {card.values[1] !== undefined && (
+            <>
+              <span class="vs">vs</span>
+              {card.values[1]}
+            </>
+          )}
+        </p>
+        <p class="card__label">
+          <Rich parts={card.label} />
+        </p>
+        {card.caveats.map((caveat) => (
+          <p class="card__caveat">
+            <strong>Limit:</strong> {caveat}
+          </p>
+        ))}
+        {card.sourceUrl !== undefined && (
+          <p class="card__source">
+            <a href={card.sourceUrl}>Check the source</a>
+          </p>
+        )}
+      </li>
+    ))
+  }
+</ul>

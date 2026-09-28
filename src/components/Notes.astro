@@ -1,0 +1,53 @@
+---
+/**
+ * The foot of every page: the limits on its numbers, and the public documents behind them.
+ *
+ * Both lists come from the page's ledger, so they are exactly the notes and sources of the
+ * figures the page used — no more, no fewer. `check-dist` then verifies on the built HTML that
+ * every caveated figure on a page has its limit present.
+ */
+import type { Note, UsedSource } from '../lib/figures';
+
+interface Props {
+  notes: Note[];
+  sources: UsedSource[];
+  /** One line on how to read the numbers, per register. */
+  reading: string;
+}
+
+const { notes, sources, reading } = Astro.props;
+---
+
+<section class="section notes" aria-labelledby="notes-heading">
+  <div class="wrap">
+    <h2 id="notes-heading">About the numbers</h2>
+    <p>{reading}</p>
+    {
+      notes.length > 0 && (
+        <ol>
+          {notes.map((note) => (
+            <li id={`note-${note.n}`}>
+              <strong>{note.value}:</strong> {note.caveat}
+            </li>
+          ))}
+        </ol>
+      )
+    }
+    {
+      sources.length > 0 && (
+        <>
+          <p>
+            <strong>Public source{sources.length > 1 ? 's' : ''}:</strong>
+          </p>
+          <ul>
+            {sources.map((source) => (
+              <li>
+                <a href={source.url}>{source.title}</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+  </div>
+</section>

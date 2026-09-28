@@ -1,0 +1,39 @@
+---
+/**
+ * Renders resolved prose: literal text, and figures emphasised so a skimming reader sees the
+ * numbers. A caveated figure carries a note number linking to the page's notes list, which is
+ * where its limit is stated — the ledger guarantees that list includes it.
+ */
+import type { Part } from '../lib/figures';
+
+interface Props {
+  parts: Part[];
+}
+
+const { parts } = Astro.props;
+
+/**
+ * Short figures never break internally ("p = 0.0072" split across two lines reads as two
+ * things). Long ones may, so a narrow phone column can never be forced to overflow.
+ */
+const NOWRAP_MAX = 24;
+---
+
+{
+  parts.map((part) =>
+    part.kind === 'text' ? (
+      part.text
+    ) : (
+      <>
+        <strong class:list={['fig', { 'fig--nowrap': part.value.length <= NOWRAP_MAX }]}>{part.value}</strong>
+        {part.note !== undefined && (
+          <sup class="fig-note">
+            <a href={`#note-${part.note}`} aria-label={`Note ${part.note}: a limit on this number`}>
+              {part.note}
+            </a>
+          </sup>
+        )}
+      </>
+    ),
+  )
+}

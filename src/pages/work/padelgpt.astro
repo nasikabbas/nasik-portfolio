@@ -1,0 +1,226 @@
+---
+/**
+ * Case study, plain register: the PadelGPT support study (ADR 002's plain flagship).
+ *
+ * Built on the report PadelOS published, so every headline number can be checked by anyone
+ * with the link. Follows ADR 001's four beats — the number, what was hard, what the measurement
+ * said, what it is worth and what happens next —
+ * in words a non-technical reader can follow. The method in depth lives on the technical page.
+ */
+import ProofCards from '../../components/ProofCards.astro';
+import Notes from '../../components/Notes.astro';
+import Rich from '../../components/Rich.astro';
+import { path } from '../../config/site';
+import Base from '../../layouts/Base.astro';
+import { FigureLedger } from '../../lib/figures';
+import { profile } from '../../lib/profile';
+import { resolveProof, type ProofItem } from '../../lib/view';
+
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+
+const proof: ProofItem[] = [
+  {
+    tag: 'Speed',
+    figures: ['pg_ai_median', 'pg_staff_median'],
+    label: 'Median time to a first answer, from PadelGPT and from club staff, across {pg_clubs} in {pg_countries}.',
+  },
+  {
+    tag: 'Missed',
+    figures: ['pg_unanswered'],
+    label: 'of the {pg_requests} messages players sent to club staff never got a reply.',
+  },
+  {
+    tag: 'Quality',
+    figures: ['pg_blind'],
+    label: "questions where a reviewer, not told which reply was which, rated PadelGPT's answer as good as the club's, or better.",
+  },
+  {
+    tag: 'Capacity',
+    figures: ['pg_automatable'],
+    label: "of staff messages PadelGPT could have fully answered today, from the club's own information.",
+  },
+];
+const cards = resolveProof(proof, ledger);
+
+const lede = r(
+  'PadelGPT is the AI assistant inside PadelOS, the software padel clubs use to run bookings, payments and their player app. Over the summer of 2026 we measured it against the clubs\' own support staff, on the same kinds of questions.',
+);
+
+const problem = [
+  r(
+    'Players message their club about bookings, prices, open matches, lessons and refunds. Staff answer when they can, around the rest of their work. Over the summer, {pg_over_4h} of those messages waited more than four hours for a first reply, and {pg_unanswered} were never answered at all.',
+  ),
+  r(
+    'Players also write when the club is busy or closed: {pg_off_hours} of PadelGPT conversations started outside office hours.',
+  ),
+];
+
+const method = [
+  r(
+    'We read everything: all {pg_requests} messages players sent to club staff between June and August, and every PadelGPT conversation since it launched on 1 July.',
+  ),
+  r(
+    'Then we asked one question of every staff message: could PadelGPT have answered this? That is a judgement, and a judgement can flatter. So every message was judged twice, by two different methods, and we report the range between them rather than the better number. A person then checked a sample by hand.',
+  ),
+  r(
+    "Quality was judged by a person, blind: a reviewer compared PadelGPT's first reply with the club's real reply to the same questions, without knowing which was which.",
+  ),
+];
+
+const found = [
+  {
+    label: 'Speed.',
+    parts: r(
+      'PadelGPT gave a first answer in a median of {pg_ai_median}, and nine in ten arrived within {pg_ai_p90}, at any hour. Staff took {pg_staff_median}.',
+    ),
+  },
+  { label: 'Quality.', parts: r("PadelGPT's answer was as good as the club's, or better, in {pg_blind} questions.") },
+  {
+    label: 'Reach.',
+    parts: r(
+      "Players wrote in {pg_languages}, and {pg_non_english} of conversations were not in English. PadelGPT answers in the player's own language.",
+    ),
+  },
+  {
+    label: 'Use.',
+    parts: r(
+      '{pg_players} players held {pg_conversations} conversations with it in its first two months, rising from {pg_growth}. At clubs where both channels were live, {pg_share} of all contacts already went to PadelGPT.',
+    ),
+  },
+  {
+    label: 'Capacity.',
+    parts: r(
+      '{pg_automatable} of the messages staff received could have been fully answered by PadelGPT as it is today. With the planned admin assistant, which prepares an action such as moving a booking for a staff member to approve with one tap, that rises to {pg_with_admin}.',
+    ),
+  },
+];
+
+const worth = [
+  r(
+    'The estimated saving is {pg_staff_hours} of staff time a month across these clubs, and {pg_waiting} of player waiting over the three months.',
+  ),
+];
+
+const next = [
+  r('Clubs fill in the few pieces of information players ask about most.'),
+  r('PadelGPT answers first, and passes anything that needs a person to staff with the details already attached.'),
+  r('An admin assistant prepares staff-only actions, and a staff member approves each one before it happens.'),
+  r(
+    'Decisions that need judgement stay with people. In {pg_goodwill} of the messages staff answered, they made an exception or offered goodwill, and that is theirs to give.',
+  ),
+];
+
+const examples = {
+  staff: r('A request to move a booking, first answered after {ex_staff_wait}.'),
+  ai: r('A late-night availability question, answered from live data in {ex_ai_reply}.'),
+};
+
+// The chat examples quote the public report verbatim; only the reply time is a figure.
+const aiReplyTime = ledger.plain('{ex_ai_reply}');
+
+const report = profile.sources.padelgpt_report;
+if (report === undefined) throw new Error('The PadelGPT report source is missing from profile.yaml.');
+---
+
+<Base
+  title="Answers in seconds, not hours — PadelGPT case study"
+  description="How PadelOS measured its AI assistant, PadelGPT, against club support staff across a summer of real player messages, and what it changed."
+  path="/work/padelgpt/"
+  register="plain"
+  counterpart="/technical/evaluation/"
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Case study · PadelOS · Summer 2026</p>
+        <h1>Answers in seconds, not hours</h1>
+        <p class="lede lede--long"><Rich parts={lede} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="numbers-heading">
+      <div class="wrap">
+        <h2 id="numbers-heading">The numbers</h2>
+        <ProofCards cards={cards} />
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="problem-heading">
+      <div class="wrap">
+        <div class="prose">
+          <h2 id="problem-heading">The problem</h2>
+          {problem.map((parts) => <p><Rich parts={parts} /></p>)}
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="chat">
+              <p class="chat__msg chat__msg--player"><b>Player · Saturday 13:20</b>Hi, can I move my booking to 17:00?</p>
+              <p class="chat__msg chat__msg--reply"><b>Club staff · Monday 09:22</b>Hi, our apologies for only noticing your question now. I hope you were still able to play!</p>
+            </div>
+            <p class="chat__caption"><Rich parts={examples.staff} /></p>
+          </div>
+          <div>
+            <div class="chat">
+              <p class="chat__msg chat__msg--player"><b>Player · Saturday 22:49</b>[Location], tomorrow 9.30</p>
+              <p class="chat__msg chat__msg--reply"><b>PadelGPT · {aiReplyTime} later</b>Available at [location] tomorrow at 9:30: a double court, 60 or 90 minutes for £24, and a single court for £10. Which court and duration would you like to book?</p>
+            </div>
+            <p class="chat__caption"><Rich parts={examples.ai} /></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="method-heading">
+      <div class="wrap prose">
+        <h2 id="method-heading">What we did</h2>
+        {method.map((parts) => <p><Rich parts={parts} /></p>)}
+        <p class="pull">The hard part was not the AI. It was being fair: measuring the AI and the people on the same work, and reporting the less flattering number when two methods disagreed.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="found-heading">
+      <div class="wrap prose">
+        <h2 id="found-heading">What we found</h2>
+        <ul class="bullets">
+          {found.map(({ label, parts }) => (
+            <li>
+              <strong>{label}</strong> <Rich parts={parts} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="worth-heading">
+      <div class="wrap prose">
+        <h2 id="worth-heading">What it is worth</h2>
+        {worth.map((parts) => <p><Rich parts={parts} /></p>)}
+        <h3>What happens next</h3>
+        <ul class="bullets">
+          {next.map((parts) => <li><Rich parts={parts} /></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="role-heading">
+      <div class="wrap prose">
+        <h2 id="role-heading">My role</h2>
+        <p>
+          PadelGPT is the product I lead, and this study was mine to run. PadelOS published it in
+          full, with every chart and its method, at <a href={report.url}>padelos.com</a>.
+        </p>
+        <p>
+          For how the AI itself was evaluated — replaying real conversations safely and judging
+          replies blind — see the <a href={path('/technical/evaluation/')}>technical case study</a>.
+        </p>
+      </div>
+    </section>
+  </article>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={ledger.sources()}
+    reading="Every number on this page comes from the report PadelOS published. Figures marked with a note are estimates or small samples, and the note says how far to trust them."
+  />
+</Base>

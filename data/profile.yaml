@@ -1,0 +1,724 @@
+# Single source of truth. Every published surface is generated from this file.
+#
+# Provenance rules (enforced by src/schema/claim.ts and src/schema/profile.ts):
+#   - Every number lives under `figures`, uses strictClaim, and has NO `assumed` state. A figure
+#     not traced to a source cannot be written here at all — the build fails at parse time.
+#   - Prose never types a number. It embeds a figure by id — `{pg_ai_median}` — so each fact is
+#     written once and both registers (plain and technical, ADR 002) quote the same value.
+#   - `basis` records where a figure came from. `source` names a public document a reader can
+#     open; figures without one come from private records or his own account.
+#   - `caveat` is a limit that travels with the value. The renderer shows it wherever the value
+#     appears, and `check-dist` fails the build on the built page if it does not.
+#
+# Disclosure rule (his instruction, 2026-09-27): name employers and public bodies; never a
+# private client. `scripts/check-dist.ts` enforces it on the built site.
+
+person:
+  name: Nasik Abbas
+  role: Applied AI Lead
+  location: Pakistan
+  relocation: Open to relocation
+  email: syed.nasik.abbas@gmail.com
+  pronouns: he/him
+  links:
+    linkedin: https://www.linkedin.com/in/nasikabbas/
+    github: https://github.com/nasikabbas
+  headline:
+    plain: Building AI products that work in real businesses, not just in the lab.
+    technical: Production LLM systems, and the evaluation that shows whether they work.
+  summary:
+    plain:
+      - >-
+        Plenty of AI looks impressive in a demo. The harder part is making it hold up with real
+        customers, real data and busy staff, and knowing with numbers whether it actually helps.
+      - >-
+        That is the work at PadelOS, where PadelGPT answers players for padel clubs in
+        {pg_countries}. Players get a first answer in a median of {pg_ai_median}, against
+        {pg_staff_median} from club staff.
+      - >-
+        The road here ran through solar engineering, management consulting and three startups,
+        which keeps the questions practical: does it work, who does it help, and what does it
+        change?
+    technical:
+      - >-
+        Leading PadelGPT at PadelOS: a multi-agent LLM system for players and club staff, shipped
+        as {pg_releases} versioned releases in {pg_release_span} and evaluated on {eval_threads}
+        real support threads.
+      - >-
+        The road here ran through product management for an IoT supply-chain platform in Saudi
+        Arabia, three startups, and three years of consulting in process engineering, ERP and
+        financial modelling.
+  contact: >-
+    Currently leading applied AI at PadelOS, and always glad to talk about roles where AI has to
+    work in a real business.
+
+sources:
+  padelgpt_report:
+    title: PadelGPT and the Support Tool, summer 2026 — PadelOS
+    url: https://www.padelos.com/reports/padelgpt-summer-2026
+
+figures:
+  # ── Career ──────────────────────────────────────────────────────────────────────────────
+  career_years:
+    figure:
+      state: verified
+      value: ten years
+      basis: >-
+        Professional work from Oct 2016 (Trillium Pakistan) to the present, plus a 2014
+        internship at Unilever. His own account of each role.
+
+  # ── PadelGPT — the public support report (June–August 2026) ────────────────────────────
+  pg_ai_median:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 9.7 seconds
+      basis: PadelGPT's median time to a first reply, 1 July – 31 August 2026. Public report, section 2.
+  pg_ai_p90:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 23 seconds
+      basis: 90% of PadelGPT first replies arrived within 23 seconds. Public report, section 2.
+  pg_staff_median:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 4.8 hours
+      basis: >-
+        Median wait for a first staff reply across 1,457 Support Tool requests, 1 June – 31
+        August 2026. Also 4.8 h at the same 15 clubs in July–August alone. Public report, section 3.
+  pg_unanswered:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 9.1%
+      basis: 133 of 1,457 staff requests never got a reply. Public report, section 3.
+  pg_requests:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: '1,457'
+      basis: Support Tool requests from players, 1 June – 31 August 2026. Public report.
+  pg_clubs:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 15 clubs
+      basis: The clubs in the report. Public report, headline ("15 clubs · 9 countries").
+  pg_countries:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: nine countries
+      basis: Public report, headline ("15 clubs · 9 countries").
+  pg_players:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: '461'
+      basis: Players who used PadelGPT between 1 July and 31 August 2026. Public report, section 5.
+  pg_conversations:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: more than 660
+      basis: PadelGPT conversations, 1 July – 31 August 2026. Public report, section 5.
+  pg_growth:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 224 in July to 442 in August
+      basis: PadelGPT conversations per month after launch on 1 July 2026. Public report, section 1.
+  pg_languages:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: eight languages
+      basis: Languages players wrote in; PadelGPT replies in the player's language. Public report.
+  pg_non_english:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 29%
+      basis: Share of PadelGPT conversations not in English. Public report, section 5.
+  pg_off_hours:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 40%
+      basis: Share of PadelGPT conversations started outside 09:00–18:00, club-local time. Public report, section 6.
+  pg_share:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 36%
+      basis: Share of all player contacts that went to PadelGPT where both channels were live. Public report.
+  pg_answered:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 85%
+      basis: PadelGPT conversations answered outright (568); 3.8% passed to staff. Public report, section 5.
+  pg_blind:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 28 of 40
+      basis: >-
+        Blind test: a PadelOS reviewer compared PadelGPT's first reply with the club's actual
+        reply to 40 real player questions, without knowing which was which; PadelGPT was at least
+        as good in 28 and better in 23, staff better in 12. Public report, section 5.
+      caveat: >-
+        One club, 40 questions, first replies only, in English and Dutch. With a sample this
+        size, the true share is likely between 55% and 82%.
+  pg_automatable:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 31–44%
+      basis: >-
+        Share of all 1,457 staff requests PadelGPT could have fully answered with the club's
+        existing information. Public report, section 5.
+      caveat: >-
+        An estimate. Every request was judged twice, by two different methods; the range runs
+        from where both agree to the higher of the two. A hand check of 28 requests agreed with
+        each method on 22.
+  pg_with_admin:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 92–95%
+      basis: >-
+        Share of staff requests PadelGPT could handle end to end with the planned admin
+        assistant, where staff confirm every admin action. Public report, section 4.
+      caveat: >-
+        A projection for an assistant that is planned, not built. Every admin action would wait
+        for a staff member to confirm it; the rest stay with staff.
+  pg_staff_hours:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: about 43 hours
+      basis: Staff time saved per month across the 15 clubs, today. Public report, section 7.
+      caveat: >-
+        An estimate on mid assumptions of five minutes per staff reply. Across the low and high
+        assumptions it is 26 to 69 hours a month.
+  pg_waiting:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 13,863 hours
+      basis: Player waiting removed over three months on requests judged fully answerable. Public report, section 7.
+      caveat: >-
+        An estimate, at the top of the range: it counts the waiting on requests that the more
+        generous of the two methods judged fully answerable.
+  pg_goodwill:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 8.2%
+      basis: Share of answered requests where staff used judgement, made an exception or offered goodwill. Public report.
+  pg_over_4h:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 48%
+      basis: Staff requests whose first reply took more than four hours (695 of 1,457). Public report, section 5.
+  ex_staff_wait:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 44 hours
+      basis: Example in the public report — a Saturday request to move a booking, first answered on Monday.
+  ex_ai_reply:
+    source: padelgpt_report
+    figure:
+      state: verified
+      value: 17 seconds
+      basis: Example in the public report — a late-Saturday availability question answered from live data.
+
+  # ── PadelGPT — the platform (the PadelGPT repository, checked 2026-09-27) ──────────────
+  pg_releases:
+    figure:
+      state: verified
+      value: '33'
+      basis: >-
+        The production changelog of the PadelGPT repository lists 33 versions, 1.0.0 (3 Aug 2026) to
+        1.16.0 (17 Sep 2026), promoted through main, staging and release; 39 first-parent merges
+        into prod. Checked 2026-09-27.
+  pg_release_span:
+    figure:
+      state: verified
+      value: six weeks
+      basis: 1.0.0 on 3 Aug 2026 to 1.16.0 on 17 Sep 2026 — 45 days. CHANGELOG.md on prod.
+  pg_agents:
+    figure:
+      state: verified
+      value: '15'
+      basis: The agent documentation in the PadelGPT repository — "13 of the 15 agents" are stateless sub-agents.
+  pg_agent_split:
+    figure:
+      state: verified
+      value: two supervisors routing to 13 specialists
+      basis: agents_info.md — the player supervisor composes 9 specialists, the admin supervisor 4.
+  pg_tools:
+    figure:
+      state: verified
+      value: '169'
+      basis: The tool-server documentation in the PadelGPT repository — player server 67 tools, admin server 102 tools.
+  pg_tools_split:
+    figure:
+      state: verified
+      value: 102 admin and 67 player
+      basis: The tool-server documentation in the PadelGPT repository.
+  pg_commits:
+    figure:
+      state: verified
+      value: 601 of 818
+      basis: git shortlog -sn --all on the PadelGPT repository, 2026-09-27 (601 authored by him).
+  seg_growth:
+    figure:
+      state: verified
+      value: 7×
+      basis: >-
+        Segment messages per 30-day window, 16 → 45 → 112, June to September 2026 — the
+        message-level admin export of 2026-09-19. The same export shows segments
+        about 6× cheaper per message than admin chat.
+  seg_share_msgs:
+    figure:
+      state: verified
+      value: 40%
+      basis: Segment share of admin messages in the last 30-day window (112 of 278). Admin export, 2026-09-19.
+  seg_cost_share:
+    figure:
+      state: verified
+      value: 6.3%
+      basis: Segment share of admin model spend over 90 days ($8.79 of $140.55). Admin export, 2026-09-19.
+  # ── The evaluation study (feature/evals-pipeline: evals_info.md, the evaluation's documentation) ──
+  eval_threads:
+    figure:
+      state: verified
+      value: '1,280'
+      basis: Real two-sided support threads in the evaluation corpus. the evaluation's documentation.
+  eval_answer_alone:
+    figure:
+      state: verified
+      value: 51.5%
+      basis: Share of support resolved by answering alone, measured from what admins did — no judge involved.
+  eval_rating:
+    figure:
+      state: verified
+      value: 12.2%
+      basis: >-
+        Rating assignment as a share of all support load — 156 threads where it was the only
+        thing the admin had to do. A self-service gap in the product, not an AI gap.
+  eval_calib_turns:
+    figure:
+      state: verified
+      value: 40 turns
+      basis: The blind human calibration set, labelled by a senior PadelOS reviewer. the evaluation's documentation.
+  eval_slice:
+    figure:
+      state: verified
+      value: 83 of 1,280
+      basis: Threads in the quality slice — one club, two languages, opening turns only.
+  eval_balance:
+    figure:
+      state: verified
+      value: 50.2% across 12,000 slot assignments
+      basis: >-
+        Verified balance of the position-randomised slot assignment — the stable hash placed PadelGPT's
+        reply first in 50.2% of 12,000 assignments (49–50.6% per lens), checked when the judge was built
+        and pinned by a test; every real verdict records its slot. The evaluation's documentation and
+        the commit that introduced the judge.
+  # ── GAT Consulting ─────────────────────────────────────────────────────────────────────
+  gat_studies:
+    figure:
+      state: verified
+      value: four
+      basis: TORs for the four TUSDEC projects, and the four final reports (Nov 2020 – Apr 2021).
+  gat_sectors:
+    figure:
+      state: verified
+      value: 6 industries
+      basis: >-
+        Consulting at GAT across construction materials, technical textiles and sportswear, light
+        engineering and cutlery (government programmes: TUSDEC, PIDC), cosmetics and chemicals
+        manufacturing, and microfinance (private clients). The TUSDEC reports and his own account.
+  gat_cutlery_firms:
+    figure:
+      state: verified
+      value: 58 firms
+      basis: Cutlery interim report (TUSDEC, 17 May 2019), section 5 — systematic random sample, about 18% of the population.
+  gat_cutlery_population:
+    figure:
+      state: verified
+      value: '280'
+      basis: Registered firms at the Pakistan Cutlery Association, Wazirabad. Cutlery interim report, section 5.
+  gat_cutlery_fgd:
+    figure:
+      state: verified
+      value: five focus groups
+      basis: Cutlery interim report, section 5.
+  gat_cutlery_items:
+    figure:
+      state: verified
+      value: 55 items to 41
+      basis: Questionnaire items, first draft to final version after field testing and client review. Cutlery interim report.
+  gat_cogs:
+    figure:
+      state: verified
+      value: 4%
+      basis: His account of the engagement. Cost of goods sold, first year of implementation.
+  gat_data_years:
+    figure:
+      state: verified
+      value: five years
+      basis: His account — production and sales data used for the planning models.
+  gat_warehouse:
+    figure:
+      state: verified
+      value: 72,000 sq ft
+      basis: His account — the storage warehouse at the manufacturer's facility.
+  gat_ecom_conversion:
+    figure:
+      state: verified
+      value: 6.2%
+      basis: His account — conversion rate of the online store.
+  gat_ecom_returning:
+    figure:
+      state: verified
+      value: 30%
+      basis: His account — returning-customer rate of the online store.
+  gat_loan_size:
+    figure:
+      state: verified
+      value: PKR 50,000
+      basis: His account — the loan ceiling for the microfinance credit scorecard system.
+
+  # ── The founder years ──────────────────────────────────────────────────────────────────
+  ss_paid_users:
+    figure:
+      state: verified
+      value: '1,500'
+      basis: His account — paying users, no paid marketing.
+  ss_paid_weeks:
+    figure:
+      state: verified
+      value: six weeks
+      basis: His account — the period over which the 1,500 paying users were acquired.
+  ss_credits:
+    figure:
+      state: verified
+      value: about $2 million
+      basis: >-
+        His account, 2026-09-27: total cloud and software credits from AWS, Segment, Mixpanel
+        and Intercom, $250,000 of it from Intercom and AWS. Credits at face value, not capital.
+  ingrain_waitlist:
+    figure:
+      state: verified
+      value: 3,122
+      basis: InGrain investor deck, 17 Nov 2021, slide 2 — waiting-list sign-ups since September 2021.
+
+  # ── Trillium Pakistan ──────────────────────────────────────────────────────────────────
+  tr_training_before:
+    figure:
+      state: verified
+      value: four and a half months
+      basis: His account, 2026-09-27 — the trainee engineers' training period before the rebuild.
+  tr_training_after:
+    figure:
+      state: verified
+      value: under two months
+      basis: His account — a 62.5% cut from 4.5 months, i.e. about 1.7 months.
+  tr_training_cut:
+    figure:
+      state: verified
+      value: 62.5%
+      basis: His account, 2026-09-27 — his career notes record the training period cut by 62.5%.
+  tr_team:
+    figure:
+      state: verified
+      value: two engineers
+      basis: His account — the team building design tools.
+
+roles:
+  - id: padelos
+    org: PadelOS
+    about: Software that padel clubs use to run bookings, payments and their player app. Based in Amsterdam.
+    period: 2024 – present
+    basis: >-
+      His own account; the public PadelGPT report; the PadelGPT repository's agent, tool-server,
+      retrieval and release documentation; the production usage exports; the Pollen
+      architecture deck and device-configuration files.
+    positions:
+      - title: Applied AI Lead, PadelGPT
+        period: 2025 – present
+        about: >-
+          PadelGPT is the AI assistant inside PadelOS. It answers players in their own language,
+          at any hour, from each club's live bookings, prices and rules.
+        plain:
+          - >-
+            Answers in {pg_languages}. {pg_answered} of conversations were answered outright, and
+            where players could choose, {pg_share} already came to PadelGPT rather than club staff.
+          - >-
+            Led the study that compared PadelGPT with club support staff across all {pg_requests}
+            messages players sent over a summer. PadelOS published it.
+          - >-
+            A segmentation tool turns a club manager's request, written in plain words, into the
+            right customer list for a campaign. Its use grew {seg_growth} in three months.
+          - >-
+            {pg_releases} releases to production in {pg_release_span}, each tested in stages
+            before it reached clubs.
+        technical:
+          - >-
+            {pg_agents} LangGraph agents — {pg_agent_split} — behind a player surface and an
+            admin surface, calling {pg_tools} tools ({pg_tools_split}) on two FastMCP servers,
+            reached in-process and over HTTP for white-label consumers.
+          - >-
+            Tenancy enforced server-side: identity parameters are stripped from every tool schema
+            the model sees and injected at call time from server-set configuration, so a prompt
+            cannot widen its own scope.
+          - >-
+            Text-to-SQL as a bounded, deterministic LangGraph StateGraph — validate, select
+            tables, select columns, write, execute, review, at most three loops — on o3 and
+            o4-mini against a read-only replica. It powers audience segmentation, with a
+            controlled-vocabulary ontology and a classifier that refuses discriminatory targeting.
+          - >-
+            Retrieval over the club knowledge base on a FAISS inner-product index of normalised
+            embeddings, rebuilt by temp-file-then-rename so a live server never reads a
+            half-written index.
+          - >-
+            Measured the two admin surfaces against each other over a quarter: segment use grew
+            {seg_growth} to {seg_share_msgs} of admin messages at {seg_cost_share} of admin model
+            spend. The efficient surface was the one clubs adopted, so the roadmap moved onto it.
+          - >-
+            {pg_releases} versioned releases in {pg_release_span}, promoted main → staging →
+            release → prod. Authored {pg_commits} commits in the repository.
+      - title: Product Manager, Pollen
+        period: 2024 – 2025
+        about: >-
+          Pollen tracked food from farm to shop in Saudi Arabia, so supply problems and spoilage
+          could be caught early. It was built at Moonlabor, the company PadelOS was later spun
+          out of.
+        plain:
+          - >-
+            Rolled it out on the ground across Riyadh, Jeddah and Dammam–Khobar. Chose where
+            trackers went, fitted them to the refrigerated vehicles and warehouses of food
+            distributors and a supermarket chain, and trained clients and drivers.
+          - >-
+            Built a fleet simulator from routes and delivery patterns in real logistics data, so
+            the team could test the system day and night without hardware.
+          - >-
+            Designed the alerting: unusual events are flagged, ranked and paired with a
+            recommended action, and a person makes the final call.
+        technical:
+          - >-
+            Device-agnostic IoT ingest: Teltonika, BiTrek and Digital Matter trackers on roaming
+            IoT SIMs, with data arriving over MQTT through a webhook or by polling, queued, and
+            consumed in chunks.
+          - >-
+            Simulacrum, an IoT fleet simulator: continuous-monitoring and inter- and intra-city
+            travel modes, a configurable fleet and routes, and route choice mined from real
+            logistics data, so models could be tested against realistic streams around the clock.
+          - >-
+            Anomaly triage with a human in the loop: the system flags and ranks supply-chain
+            anomalies and recommends an action; the decision stays with a person.
+          - >-
+            Platform: NestJS microservices on AWS EKS, React, PostgreSQL, Redis, RabbitMQ, the
+            ELK stack and CloudWatch.
+
+  - id: founder
+    org: Founder
+    about: Three companies in three years, in property investing, education and medical technology.
+    period: 2021 – 2023
+    basis: >-
+      The Spectre Bionics investor deck (May 2023); his own account of each venture; the InGrain decks
+      (Oct–Nov 2021); his answers of 2026-09-19 and 2026-09-27.
+    positions:
+      - title: Founder and CEO
+        org: Spectre Bionics
+        period: '2023'
+        about: A medical-technology startup working to restore sight through a brain‑computer interface.
+        plain:
+          - Its first product let people with paralysis control a computer with their eyes.
+          - Built the research team, starting with a prospective co-founder from MIT.
+          - >-
+            Closed it in 2023: a company like this needs a full-time technical co-founder, and it
+            never had one.
+        technical:
+          - >-
+            Isaac-1, an MVP that lets quadriplegic users control digital devices with eye
+            movement — the first step toward the visor the full system needs.
+          - >-
+            Built the research team around a prospective co-founder, a postdoctoral researcher at
+            MIT, and grew it from there. The concept: a wearable visor and camera, a high-bandwidth
+            wireless link, and an electrode array in the visual cortex that produces a spatial
+            pattern of phosphenes.
+          - >-
+            Closed in 2023: a brain–computer interface company needs a full-time technical
+            co-founder, and it never had one.
+      - title: Technical Co-founder
+        org: Schooling Studio
+        period: 2021 – 2023
+        about: >-
+          An AI maths tutor for school students: photograph a question and get the solution,
+          explained step by step.
+        plain:
+          - Built on the same kind of AI as ChatGPT, before ChatGPT launched.
+          - "{ss_paid_users} paying users in {ss_paid_weeks}, with no paid advertising."
+          - >-
+            Raised {ss_credits} in cloud and software credits from AWS, Segment, Mixpanel and
+            Intercom to fund the build.
+          - Finance sat alongside product — budgets, forecasts, accounts and tax.
+        technical:
+          - An LLM-based tutor for maths and science, built before ChatGPT launched.
+          - "{ss_paid_users} paying users in {ss_paid_weeks}, acquired without paid marketing."
+          - >-
+            Owned the product lifecycle — discovery, product requirements, UX direction, roadmap
+            and OKRs, go-to-market — and the finance function; raised {ss_credits} in cloud and
+            software credits (AWS, Segment, Mixpanel, Intercom) to fund the build.
+      - title: Founder
+        org: InGrain
+        period: '2021'
+        about: An app for investing in property from a few dollars.
+        plain:
+          - "{ingrain_waitlist} people joined the waiting list in under three months, before launch."
+          - >-
+            Pakistan's securities regulator did not grant the licence it needed, so the focus
+            moved to education, where Schooling Studio found its market.
+        technical:
+          - >-
+            A marketplace for units of closed-ended real-estate funds: pooled bookings held in
+            third-party escrow, released on full subscription, and resaleable in the app.
+          - "{ingrain_waitlist} waiting-list sign-ups in under three months, with no paid acquisition."
+          - Stopped for want of a licence from the Securities and Exchange Commission of Pakistan (SECP).
+
+  - id: gat
+    org: GAT Consulting
+    about: A management consultancy working for government bodies and manufacturers.
+    period: 2018 – 2021
+    basis: >-
+      His own account; the four TUSDEC reports and their TORs; the cutlery interim report
+      (TUSDEC, 17 May 2019) and options paper (PIDC, Oct 2020); the manufacturer's process
+      documents (11 Jan 2019); his account of his role, 2026-09-27.
+    positions:
+      - title: Business Transformation Consultant
+        period: 2018 – 2021
+        plain:
+          - >-
+            Built the reports end to end — field research, analysis and financial models — for
+            {gat_studies} national feasibility studies commissioned by TUSDEC, the government's
+            technology-upgrade company. They covered construction materials, technical textiles,
+            sportswear and light engineering.
+          - >-
+            Researched a national study of Pakistan's cutlery industry: a survey of
+            {gat_cutlery_firms}, {gat_cutlery_fgd} and factory visits in China and Vietnam.
+          - >-
+            For PIDC, the government's industrial development corporation, designed a new way to
+            run a shared factory for the cutlery industry. A university would own and operate it,
+            and put its income back into research and scholarships.
+          - >-
+            At a cosmetics manufacturer, lean methods and production plans built on
+            {gat_data_years} of sales data brought the cost of goods sold down {gat_cogs} in the
+            first year.
+          - >-
+            Also designed the layout of its {gat_warehouse} warehouse and launched its online
+            store, which converted {gat_ecom_conversion} of visitors and brought back
+            {gat_ecom_returning} of customers.
+          - >-
+            Led an ERP rollout end to end, and built a digital records system for an engineering
+            firm that halved the time to prepare a project's final claim.
+        technical:
+          - >-
+            The reports and financial models for {gat_studies} TUSDEC feasibility studies under the National
+            Strategic Programme for Acquisition of Industrial Technology — testing facilities for
+            construction materials and technical textiles, waterless dyeing for sportswear, and
+            digital design for light engineering: three-statement projections with scenario and
+            risk analysis, feeding cost–benefit analysis and Planning Commission proposals.
+          - >-
+            Field research and analysis for the cutlery-sector benchmarking study: a systematic
+            random sample of {gat_cutlery_firms} from {gat_cutlery_population} registered firms, a
+            questionnaire field-tested and cut from {gat_cutlery_items}, analysis in SPSS, and
+            findings validated in {gat_cutlery_fgd}.
+          - >-
+            Designed the Own-Operate-Develop-Educate partnership model for PIDC's proposed
+            cutlery common production facility: an adaptation of the World Bank's
+            Own-Develop-Operate PPP in which a partner university owns and operates the facility,
+            and its revenue is ring-fenced for expansion, R&D and an endowment.
+          - >-
+            Lean transformation at a manufacturer: value-stream mapping, 5S and Kanban, and
+            production-planning models on {gat_data_years} of production and sales data
+            ({gat_cogs} lower cost of goods sold in year one); warehouse flow and shelving
+            designed with closeness matrices and block plans; an online store launched at
+            {gat_ecom_conversion} conversion and {gat_ecom_returning} returning customers.
+          - >-
+            Odoo ERP end to end — CRM, documents, HR, finance, purchasing, manufacturing,
+            inventory, warehouse, point of sale and portals — with the platform chosen by
+            Analytic Hierarchy Process alongside the executive team; and a credit scorecard
+            system for a microfinance lender, for loans up to {gat_loan_size}.
+
+  - id: trillium
+    org: Trillium Pakistan
+    about: A distributor of solar power, aviation and underwater systems for oil and gas, telecom and defence clients.
+    period: 2016 – 2017
+    basis: His own account; his training binder (TU Delft and IRENA material, annotated).
+    positions:
+      - title: Trainee Engineer, solar power
+        period: 2016 – 2017
+        plain:
+          - >-
+            Solar power systems for oil and gas, telecom and defence clients, from design and
+            costing through the bid, to buying the equipment overseas and delivering it to site.
+          - >-
+            Led installations at remote gas fields in Sindh, where solar power protects pipelines
+            from corrosion, and trained Pakistan Petroleum's maintenance teams to run them.
+          - >-
+            Automated equipment selection and material estimates, and cut new engineers' training
+            from {tr_training_before} to {tr_training_after}.
+        technical:
+          - >-
+            Solar-powered corrosion protection for gas-field pipelines in Sindh: installation lead
+            on remote sites, and operator training for Pakistan Petroleum Limited.
+          - >-
+            Brought PVsyst into design and modelling, automated equipment selection and material
+            estimation with Excel macros, and led {tr_team} building design tools.
+          - >-
+            Rebuilt the trainee programme: {tr_training_before} to {tr_training_after}, a
+            {tr_training_cut} cut.
+          - >-
+            The full procurement cycle for imported equipment: tender analysis, supplier
+            quotations and negotiation, letters of credit, port clearance and delivery to site.
+
+  - id: unilever
+    org: Unilever Pakistan
+    about: A university internship programme at the consumer-goods company's ice-cream plant.
+    period: '2014'
+    basis: His own account of the internship.
+    positions:
+      - title: Intern, Manufacturing Excellence
+        period: Summer 2014
+        plain:
+          - >-
+            Joined the Manufacturing Excellence team as the plant moved to World Class
+            Manufacturing, working on contamination control, warehouse capacity and procedure
+            compliance.
+        technical:
+          - >-
+            Lean and TPM at a food plant moving from TQM to World Class Manufacturing:
+            contamination-source elimination, a warehouse capacity and dwell-time study, an SOP
+            compliance audit of the warehouse management system, and KPI monitoring with
+            root-cause analysis.
+
+education:
+  - degree: BE Electrical Engineering
+    institution: National University of Sciences and Technology (NUST)
+    year: '2015'
+
+certifications:
+  - { name: Lean Six Sigma Green Belt, issuer: GAT Consulting, year: '2021' }
+  - { name: Financial Modeling and Valuation Analysis, issuer: GAT Consulting, year: '2021' }
+  - { name: Project Feasibility and Financial Planning, issuer: GAT Consulting, year: '2020' }
+  - { name: Corporate Financial Planning and Analysis, issuer: GAT Consulting, year: '2020' }
+  - { name: ERP Essentials, issuer: Lahore Chamber of Commerce and Industry, year: '2018' }

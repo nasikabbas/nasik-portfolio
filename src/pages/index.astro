@@ -1,0 +1,234 @@
+---
+/**
+ * Home, plain register — written for the reader who arrives first: a recruiter or HR partner,
+ * often on a phone (ADR 002).
+ *
+ * Order follows what that reader needs, in the order they need it: who this is and what he
+ * does (hero) → proof in plain numbers → what the work is → one case study to forward →
+ * the career, scannable by date → the thread that connects it → credentials → contact.
+ *
+ * Every number comes from `data/profile.yaml` through the page's ledger; nothing numeric is
+ * typed into this file except years.
+ */
+import ProofCards from '../components/ProofCards.astro';
+import Notes from '../components/Notes.astro';
+import Rich from '../components/Rich.astro';
+import Timeline from '../components/Timeline.astro';
+import { SITE_URL, path } from '../config/site';
+import Base from '../layouts/Base.astro';
+import { FigureLedger } from '../lib/figures';
+import { profile } from '../lib/profile';
+import { resolveProof, resolveRoles, type ProofItem } from '../lib/view';
+
+const ledger = new FigureLedger(profile);
+const { person, education, certifications } = profile;
+
+const summary = person.summary.plain.map((line) => ledger.render(line));
+
+const proof: ProofItem[] = [
+  {
+    tag: 'AI product',
+    figures: ['pg_ai_median', 'pg_staff_median'],
+    label: 'Median time to a first answer for players: from PadelGPT, and from club staff. Across {pg_clubs}, summer 2026.',
+  },
+  {
+    tag: 'AI quality',
+    figures: ['pg_blind'],
+    label:
+      "Real player questions where a reviewer, not told which reply was which, rated PadelGPT's answer as good as the club's own, or better.",
+  },
+  {
+    tag: 'Consulting',
+    figures: ['gat_sectors'],
+    label:
+      'Construction materials, technical textiles, light engineering, cutlery, cosmetics and microfinance — for government programmes and manufacturers.',
+  },
+  {
+    tag: 'Startup',
+    figures: ['ss_paid_users'],
+    label: 'Paying users in {ss_paid_weeks} for Schooling Studio, an AI maths tutor, with no paid advertising.',
+  },
+];
+const cards = resolveProof(proof, ledger);
+
+const pillars = [
+  {
+    title: 'AI that people use',
+    body: ledger.render(
+      "PadelGPT answers players in their own language, day or night, from each club's live bookings, prices and rules. In its first two months, {pg_players} players held {pg_conversations} conversations with it.",
+    ),
+  },
+  {
+    title: 'Measured against real work',
+    body: ledger.render(
+      'Results are checked against the people the AI helps, on the same questions, and shared with their limits. The support study compared PadelGPT and club staff on every message players sent over a summer.',
+    ),
+  },
+  {
+    title: 'From idea to launch',
+    body: ledger.render(
+      'Research, business case, build and rollout — in Pakistan, in Saudi Arabia, and for clubs across Europe, the Middle East, Asia and Australia.',
+    ),
+  },
+];
+
+const roles = resolveRoles(profile, 'plain', ledger);
+
+const building = [
+  ledger.render(
+    'Next, PadelGPT takes on the admin work that keeps club staff busy, such as moving a booking or fixing a payment. A staff member approves each action before it happens. The support study showed that this is where most of the remaining work sits.',
+  ),
+  ledger.render(
+    'Along the way we keep notes on what holds up in production. How do you evaluate an assistant fairly? How do you keep what it knows current? When should a person make the call? Some of those notes will become short essays here.',
+  ),
+];
+
+const description = `${person.name}, ${person.role}. ${person.headline.plain}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: person.name,
+  jobTitle: person.role,
+  url: SITE_URL,
+  email: `mailto:${person.email}`,
+  address: { '@type': 'PostalAddress', addressCountry: 'PK' },
+  worksFor: { '@type': 'Organization', name: 'PadelOS' },
+  alumniOf: education.map((e) => ({ '@type': 'CollegeOrUniversity', name: e.institution })),
+  sameAs: [person.links.linkedin, person.links.github],
+  knowsAbout: ['Applied AI', 'LLM evaluation', 'AI agents', 'Product management', 'Lean process improvement'],
+};
+---
+
+<Base title={person.role} description={description} path="/" register="plain" counterpart="/technical/" jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{person.role} at PadelOS · {person.location} · {person.relocation}</p>
+      <h1>{person.name}</h1>
+      <p class="lede">{person.headline.plain}</p>
+      <div class="summary">
+        {summary.map((parts) => (
+          <p>
+            <Rich parts={parts} />
+          </p>
+        ))}
+      </div>
+      <div class="actions">
+        <a class="button button--primary" href={`mailto:${person.email}`}>Email me</a>
+        <a class="button" href={person.links.linkedin}>LinkedIn</a>
+        <a class="button" href={path('/technical/')}>Technical version</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="proof-heading">
+    <div class="wrap">
+      <h2 id="proof-heading">Proof, in plain numbers</h2>
+      <ProofCards cards={cards} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="what-heading">
+    <div class="wrap">
+      <h2 id="what-heading">What the work looks like</h2>
+      <div class="pillars">
+        {pillars.map((pillar) => (
+          <div>
+            <h3>{pillar.title}</h3>
+            <p>
+              <Rich parts={pillar.body} />
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="work-heading">
+    <div class="wrap">
+      <h2 id="work-heading">Selected work</h2>
+      <a class="feature" href={path('/work/padelgpt/')}>
+        <p class="eyebrow">Case study · PadelOS · 2026</p>
+        <h3>Answers in seconds, not hours</h3>
+        <p>
+          How we measured PadelGPT against the clubs' own support staff — every message, on both
+          channels, over one summer — and what it changed.
+        </p>
+        <span class="feature__cta">Read the case study →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="building-heading">
+    <div class="wrap prose">
+      <h2 id="building-heading">What we're building now</h2>
+      {building.map((parts) => (
+        <p>
+          <Rich parts={parts} />
+        </p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" id="experience" aria-labelledby="experience-heading">
+    <div class="wrap">
+      <h2 id="experience-heading">Experience</h2>
+      <Timeline roles={roles} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="education-heading">
+    <div class="wrap">
+      <h2 id="education-heading">Education and certifications</h2>
+      <div class="facts">
+        <div>
+          <h3>Education</h3>
+          <ul>
+            {education.map((e) => (
+              <li>
+                {e.degree}
+                <span class="meta">
+                  {e.institution}, {e.year}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3>Certifications</h3>
+          <ul>
+            {certifications.map((c) => (
+              <li>
+                {c.name}
+                <span class="meta">
+                  {c.issuer}
+                  {c.year !== undefined && `, ${c.year}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact" aria-labelledby="contact-heading">
+    <div class="wrap">
+      <h2 id="contact-heading">Contact</h2>
+      <div class="contact-card">
+        <p>{person.contact}</p>
+        <p class="muted">Based in {person.location}. {person.relocation}.</p>
+        <div class="actions">
+          <a class="button button--primary" href={`mailto:${person.email}`}>{person.email}</a>
+          <a class="button" href={person.links.linkedin}>LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={ledger.sources()}
+    reading="Figures linked to a public report can be checked by anyone. The rest come from project records, and any of them can be walked through on request."
+  />
+</Base>

@@ -1,0 +1,258 @@
+---
+/**
+ * Home, technical register — for the engineer, hiring manager or founder who reads second
+ * (ADR 002). Same person, same figures, same career as the plain page; what changes is the
+ * vocabulary and the depth: the architecture, the safety boundaries, the economics, and the
+ * measurement principles, with exact terms used once and explained.
+ */
+import ProofCards from '../../components/ProofCards.astro';
+import Notes from '../../components/Notes.astro';
+import Rich from '../../components/Rich.astro';
+import Timeline from '../../components/Timeline.astro';
+import { path } from '../../config/site';
+import Base from '../../layouts/Base.astro';
+import { FigureLedger } from '../../lib/figures';
+import { profile } from '../../lib/profile';
+import { resolveProof, resolveRoles, type ProofItem } from '../../lib/view';
+
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+const { person, education, certifications } = profile;
+
+const summary = person.summary.technical.map((line) => ledger.render(line));
+
+const proof: ProofItem[] = [
+  {
+    tag: 'Delivery',
+    figures: ['pg_releases'],
+    label: 'versioned production releases in {pg_release_span}, each promoted main → staging → release → prod.',
+  },
+  {
+    tag: 'Platform',
+    figures: ['pg_tools'],
+    label: 'tools on two FastMCP servers, behind {pg_agents} LangGraph agents: {pg_agent_split}.',
+  },
+  {
+    tag: 'Evaluation',
+    figures: ['eval_threads'],
+    label: "real two-sided support threads, each with a club admin's actual reply as the baseline.",
+  },
+  {
+    tag: 'Adoption',
+    figures: ['seg_growth'],
+    label: 'growth in segment use over one quarter, reaching {seg_share_msgs} of admin messages at {seg_cost_share} of admin model spend.',
+  },
+];
+const cards = resolveProof(proof, ledger);
+
+const systems = [
+  {
+    title: 'Agents and tools',
+    items: [
+      r('{pg_agents} LangGraph agents: {pg_agent_split}, one supervisor per surface (player, admin).'),
+      r('{pg_tools} tools ({pg_tools_split}) on two FastMCP servers, reached in-process and over HTTP for white-label consumers.'),
+      r('Specialists are read-only and hold no product knowledge; knowledge search and escalation live on the supervisor alone, so a specialist cannot shortcut its own domain.'),
+    ],
+  },
+  {
+    title: 'Safety boundaries',
+    items: [
+      r('Tenancy is enforced server-side: identity parameters are stripped from the schema the model sees and injected at call time.'),
+      r("Mutating player tools are disabled inside the agent; its one deliberate write is escalating to human support, with the conversation's details attached."),
+      r('Boundaries are pinned by tests that assert on the resolved system prompt the model actually receives, not on configuration that says it should.'),
+    ],
+  },
+  {
+    title: 'Data and retrieval',
+    items: [
+      r('Text-to-SQL as a bounded, deterministic LangGraph StateGraph on o3 and o4-mini, against a read-only replica.'),
+      r('Audience segmentation on top of it, with a controlled-vocabulary ontology and a classifier that refuses discriminatory targeting.'),
+      r('FAISS inner-product index over normalised embeddings, swapped atomically on rebuild.'),
+    ],
+  },
+  {
+    title: 'Delivery',
+    items: [
+      r('{pg_releases} versioned releases in {pg_release_span} through a four-stage promotion chain.'),
+      r('API call sequences described in Arazzo, because the API’s primary readers are AI coding agents, not people: an offline drift gate in CI, and a live flow gate after each deploy to staging, release and prod.'),
+      r('Authored {pg_commits} commits in the repository.'),
+    ],
+  },
+];
+
+const economics = [
+  r(
+    'Over one quarter the two admin surfaces were measured against each other. Segment use grew {seg_growth} to {seg_share_msgs} of admin messages while costing {seg_cost_share} of admin model spend.',
+  ),
+  r(
+    'Clubs had adopted the efficient surface, so the roadmap moved onto it: widening segments from building campaign audiences into answering open analytics questions about the club.',
+  ),
+];
+
+const principles = [
+  { label: 'Measured and estimated are kept apart,', parts: r('and every figure says which it is.') },
+  { label: 'When two methods disagree, report the range,', parts: r('not the better number.') },
+  { label: 'An automated judge has to agree with a person', parts: r('before any of its numbers are published.') },
+  { label: 'Estimates carry their assumptions', parts: r('beside them, so a reader can redo the sum.') },
+];
+
+const roles = resolveRoles(profile, 'technical', ledger);
+
+const description = `${person.name}, ${person.role}. ${person.headline.technical}`;
+---
+
+<Base title={`${person.role} — technical`} description={description} path="/technical/" register="technical" counterpart="/">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{person.role} at PadelOS · {person.location} · {person.relocation}</p>
+      <h1>{person.name}</h1>
+      <p class="lede">{person.headline.technical}</p>
+      <div class="summary">
+        {summary.map((parts) => (
+          <p>
+            <Rich parts={parts} />
+          </p>
+        ))}
+      </div>
+      <div class="actions">
+        <a class="button button--primary" href={`mailto:${person.email}`}>Email me</a>
+        <a class="button" href={person.links.github}>GitHub</a>
+        <a class="button" href={person.links.linkedin}>LinkedIn</a>
+        <a class="button" href={path('/')}>Plain-English version</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="proof-heading">
+    <div class="wrap">
+      <h2 id="proof-heading">In numbers</h2>
+      <ProofCards cards={cards} />
+    </div>
+  </section>
+
+  <section class="section" id="systems" aria-labelledby="systems-heading">
+    <div class="wrap">
+      <h2 id="systems-heading">PadelGPT, as built</h2>
+      <p class="section__intro">
+        A multi-agent system serving players and club staff inside PadelOS's white-label club apps.
+        The design decisions below are the ones a reviewer would argue with.
+      </p>
+      <div class="two-col">
+        {systems.map((group) => (
+          <div class="panel">
+            <h3>{group.title}</h3>
+            <ul>
+              {group.items.map((parts) => (
+                <li>
+                  <Rich parts={parts} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="economics-heading">
+    <div class="wrap prose">
+      <h2 id="economics-heading">What clubs adopted</h2>
+      {economics.map((parts) => (
+        <p>
+          <Rich parts={parts} />
+        </p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="eval-heading">
+    <div class="wrap">
+      <h2 id="eval-heading">Evaluation</h2>
+      <a class="feature" href={path('/technical/evaluation/')}>
+        <p class="eyebrow">Case study · PadelOS · 2026</p>
+        <h3>Evaluating an AI assistant on real support conversations</h3>
+        <p>
+          A replay harness over real support threads — write-blocked, drift-controlled and judged
+          blind, with every automated score checked against a person before it could be published.
+        </p>
+        <span class="feature__cta">Read the evaluation →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="principles-heading">
+    <div class="wrap prose">
+      <h2 id="principles-heading">How we measure</h2>
+      <ul class="bullets">
+        {principles.map(({ label, parts }) => (
+          <li>
+            <strong>{label}</strong> <Rich parts={parts} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="career" aria-labelledby="career-heading">
+    <div class="wrap">
+      <h2 id="career-heading">Career</h2>
+      <Timeline roles={roles} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="education-heading">
+    <div class="wrap">
+      <h2 id="education-heading">Education and certifications</h2>
+      <div class="facts">
+        <div>
+          <h3>Education</h3>
+          <ul>
+            {education.map((e) => (
+              <li>
+                {e.degree}
+                <span class="meta">
+                  {e.institution}, {e.year}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3>Certifications</h3>
+          <ul>
+            {certifications.map((c) => (
+              <li>
+                {c.name}
+                <span class="meta">
+                  {c.issuer}
+                  {c.year !== undefined && `, ${c.year}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact" aria-labelledby="contact-heading">
+    <div class="wrap">
+      <h2 id="contact-heading">Contact</h2>
+      <div class="contact-card">
+        <p>{person.contact}</p>
+        <p class="muted">Based in {person.location}. {person.relocation}.</p>
+        <div class="actions">
+          <a class="button button--primary" href={`mailto:${person.email}`}>{person.email}</a>
+          <a class="button" href={person.links.github}>GitHub</a>
+          <a class="button" href={person.links.linkedin}>LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={ledger.sources()}
+    reading="Figures linked to the PadelOS report are public. The rest come from the PadelGPT repository and its production exports, and any derivation can be walked through on request."
+  />
+</Base>

@@ -1,0 +1,191 @@
+---
+/**
+ * Case study, technical register: the PadelGPT evaluation harness (ADR 002's technical flagship).
+ *
+ * The method is the story: replaying real production conversations without touching production,
+ * keeping multi-turn comparisons honest, and judging blind with a human gate in front of every
+ * published number. The findings are presented as what they were used for — product direction —
+ * and PadelOS's internal results are not recounted beyond what the method needs (his decision,
+ * 2026-09-27). Every figure comes from the evaluation's own documentation in the PadelGPT
+ * repository, read at source on 2026-09-27.
+ */
+import ProofCards from '../../components/ProofCards.astro';
+import Notes from '../../components/Notes.astro';
+import Rich from '../../components/Rich.astro';
+import { path } from '../../config/site';
+import Base from '../../layouts/Base.astro';
+import { FigureLedger } from '../../lib/figures';
+import { profile } from '../../lib/profile';
+import { resolveProof, type ProofItem } from '../../lib/view';
+
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+
+const proof: ProofItem[] = [
+  {
+    tag: 'Corpus',
+    figures: ['eval_threads'],
+    label: "real two-sided support threads, each with the club admin's actual reply as the baseline.",
+  },
+  {
+    tag: 'Where to start',
+    figures: ['eval_answer_alone'],
+    label: 'of support could be resolved by answering alone — the share an assistant can take on first.',
+  },
+  {
+    tag: 'Product insight',
+    figures: ['eval_rating'],
+    label: 'of all support load came down to one self-service feature: letting players set their own rating.',
+  },
+  {
+    tag: 'Human verdict',
+    figures: ['pg_blind'],
+    label: "questions where a blind human reviewer rated PadelGPT's first reply as good as the club's, or better.",
+  },
+];
+const cards = resolveProof(proof, ledger);
+
+const lede = r(
+  "A replay harness that runs PadelGPT over {eval_threads} real support threads, each with a club admin's actual reply to compare against — built so that no replay can ever change a real booking.",
+);
+
+const question = [
+  r(
+    "Can an assistant take on real club support? Latency and cost dashboards cannot answer that. The credible evidence is the club's own staff answering the same questions, so the corpus is two-sided threads only: a player message and a real admin reply. A thread with no admin reply has no ground truth and is left out.",
+  ),
+];
+
+const hard = [
+  {
+    title: 'Replaying production without touching production',
+    parts: r(
+      'Replaying real conversations through an agent that holds write tools could change real bookings. Writes are blocked by two independent layers — recording stubs for every tool, and a fail-closed HTTP guard — and the runner refuses to start if either fails to arm. The guard allowlists paths, never verbs, because an HTTP verb does not reliably say whether a call writes.',
+    ),
+  },
+  {
+    title: 'Keeping multi-turn comparisons honest',
+    parts: r(
+      "A thread's later player messages are reactions to what the admin said, so replaying them against a different answer stops meaning anything. There are four replay modes, never averaged: first turn only; teacher-forced, which injects the real admin reply after every turn; free-running, as a control; and a simulated player, reported separately for its bias.",
+    ),
+  },
+  {
+    title: 'Judging blind',
+    parts: r(
+      "The judge is never told which reply is the AI's. Its slot comes from a stable hash, verified balanced at {eval_balance} and recorded, so position bias is measurable. Three distinct lenses vote — grounding; actionability and resolution; tone and policy — because repeated samples of one model share its blind spots. A correct refusal scores high, because many real threads rightly end with a no.",
+    ),
+  },
+  {
+    title: 'A person in front of every number',
+    parts: r(
+      "Cohen's κ against a blind human worksheet is the publication gate: no automated score is quoted until it agrees with a person. The human set is {eval_calib_turns}, labelled by a senior PadelOS reviewer who did not know which reply was which.",
+    ),
+  },
+];
+
+const showed = [
+  {
+    title: 'Where an assistant helps first.',
+    parts: r(
+      'Measured from what admins actually did, {eval_answer_alone} of support is resolved by answering alone. That is the part an assistant can take on first, and it is where PadelGPT started.',
+    ),
+  },
+  {
+    title: 'A product fix worth more than a model change.',
+    parts: r(
+      'Rating assignment alone was {eval_rating} of all support load. Letting players set their own rating removes that load at the source, whether or not an assistant is involved — the kind of finding a harness surfaces when it measures the work rather than the model.',
+    ),
+  },
+  {
+    title: 'The verdict that was published.',
+    parts: r(
+      "On the blind human set, PadelGPT's first reply was as good as the club's, or better, in {pg_blind} questions. That human verdict is the figure PadelOS published.",
+    ),
+  },
+];
+
+const led = [
+  r(
+    'The public support study used the same discipline: two independent labelling reads, a hand check, and ranges instead of points — {pg_automatable} of staff requests fully answerable today.',
+  ),
+  r(
+    'The quality slice is deliberately narrow — {eval_slice} threads, one club, two languages, opening turns — and widens as more human labels come in.',
+  ),
+];
+---
+
+<Base
+  title="Evaluating PadelGPT — technical case study"
+  description="A write-blocked, drift-controlled replay harness over real support threads, judged blind, with a human gate in front of every published number."
+  path="/technical/evaluation/"
+  register="technical"
+  counterpart="/work/padelgpt/"
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Case study · PadelOS · 2026</p>
+        <h1>Evaluating an AI assistant on real support conversations</h1>
+        <p class="lede lede--long"><Rich parts={lede} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="numbers-heading">
+      <div class="wrap">
+        <h2 id="numbers-heading">The numbers</h2>
+        <ProofCards cards={cards} />
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="question-heading">
+      <div class="wrap prose">
+        <h2 id="question-heading">The question</h2>
+        {question.map((parts) => <p><Rich parts={parts} /></p>)}
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="hard-heading">
+      <div class="wrap">
+        <h2 id="hard-heading">What was hard</h2>
+        <div class="two-col">
+          {hard.map((item) => (
+            <div class="panel">
+              <h3>{item.title}</h3>
+              <p><Rich parts={item.parts} /></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="showed-heading">
+      <div class="wrap prose">
+        <h2 id="showed-heading">What it showed</h2>
+        {showed.map((item) => (
+          <>
+            <h3>{item.title}</h3>
+            <p><Rich parts={item.parts} /></p>
+          </>
+        ))}
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="led-heading">
+      <div class="wrap prose">
+        <h2 id="led-heading">What it led to</h2>
+        <ul class="bullets">
+          {led.map((parts) => <li><Rich parts={parts} /></li>)}
+        </ul>
+        <p>
+          The plain-English version of the support study is <a href={path('/work/padelgpt/')}>here</a>,
+          and PadelOS's full report is linked below.
+        </p>
+      </div>
+    </section>
+  </article>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={ledger.sources()}
+    reading="Evaluation figures come from the harness's own documentation in the PadelGPT repository; figures linked to the PadelOS report are public. The notes below say how far each estimate or sample can be trusted."
+  />
+</Base>

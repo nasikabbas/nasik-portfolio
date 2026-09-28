@@ -1,0 +1,14 @@
+# Build output
+node_modules/
+dist/
+.astro/
+
+# Secrets — never tracked, in any circumstance.
+*.pem
+*.key
+*.b64
+
+.DS_Store
+
+# review screenshots from `npm run shots` (generated, and include a browser profile)
+shots/

@@ -1,0 +1,61 @@
+---
+/**
+ * The career, reverse-chronological, one block per employer and one for the founder years.
+ *
+ * The period sits in its own column on wide screens so a reader can scan dates down the left
+ * edge — the first thing HR checks — without reading any prose.
+ */
+import type { RoleView } from '../lib/view';
+
+import Rich from './Rich.astro';
+
+interface Props {
+  roles: RoleView[];
+}
+
+const { roles } = Astro.props;
+---
+
+<div class="timeline">
+  {
+    roles.map((role) => (
+      <article class="role" id={`role-${role.id}`}>
+        <p class="role__when">{role.period}</p>
+        <div>
+          <h3 class="role__org">{role.org}</h3>
+          <p class="role__about">
+            <Rich parts={role.about} />
+          </p>
+          {role.positions.map((pos) => (
+            <section class="position">
+              <div class="position__head">
+                <h4>
+                  {pos.org !== undefined ? (
+                    <>
+                      {pos.org} <span class="muted">· {pos.title}</span>
+                    </>
+                  ) : (
+                    pos.title
+                  )}
+                </h4>
+                <span class="position__period">{pos.period}</span>
+              </div>
+              {pos.about.length > 0 && (
+                <p class="position__about">
+                  <Rich parts={pos.about} />
+                </p>
+              )}
+              <ul class="bullets">
+                {pos.bullets.map((parts) => (
+                  <li>
+                    <Rich parts={parts} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </article>
+    ))
+  }
+</div>

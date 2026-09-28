@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "terms": [
+    {
+      "hash": "031b21ff66d2f8b845de0978d7f2b6e9fe745df6d025a6d56d0dfa42da512467",
+      "words": 1
+    },
+    {
+      "hash": "0638b4bdaf9cbf30b63e1a7b05530ff7cca6f5c338e0a86e07e3e71d4f1c496a",
+      "words": 1
+    },
+    {
+      "hash": "0937c1fe274979526c20fb498be490d67836d1c372b83a2fe8aea1402d48cad6",
+      "words": 2
+    },
+    {
+      "hash": "09384c58f00150fd679ac054162d427c4c6350016b7aa9e22bdfa5b43177d891",
+      "words": 1
+    },
+    {
+      "hash": "0e80d9f5bdfe252ec14055a80340bb7639148b77d8790e0af610eabee248c35d",
+      "words": 2
+    },
+    {
+      "hash": "12b41956b4ce9b59cfb6a035cc4ba4b94e9be553181380dd1f01e385c480d2bc",
+      "words": 1
+    },
+    {
+      "hash": "13815a09ab5bb6064dcd94138141e091dd9227243f26caf4bace04dcf302a961",
+      "words": 2
+    },
+    {
+      "hash": "1a3db860e412d8176113f032608e7479ebb5fd3765c22a591ccf195c978bc0d9",
+      "words": 2
+    },
+    {
+      "hash": "237e4c964000835e699b79a2ca49e83906105c32c070c49d36d42150f32de5a7",
+      "words": 2
+    },
+    {
+      "hash": "253a5602afff494a8a60960946a4c5c2298e1a9cc8d12a8328608a36939cecb3",
+      "words": 1
+    },
+    {
+      "hash": "288c6a0eda519980830bb77aeb1d9cb42bbd5fa794ab2a5aaa959b35a5e3b37d",
+      "words": 1
+    },
+    {
+      "hash": "2a517f2f9f8e7a70e5ccc5c532ce66ab15049cf5a8544492222ec0994328a319",
+      "words": 2
+    },
+    {
+      "hash": "2e6290e747e9517042ecc904168a27dcc75715c30c2629894426024c89f12df0",
+      "words": 1
+    },
+    {
+      "hash": "32c15d1589348d0ed31ee560b0d0b634553cab9a32694d5acd454083bbffea8e",
+      "words": 2
+    },
+    {
+      "hash": "3552dcfd4c758c935f8ddcbcee75a3fa15570eb1434df5ebc0f83246faf7ff26",
+      "words": 1
+    },
+    {
+      "hash": "35edf1631c886d65506b705e8cab078aa1a85807f1ae509f02acc6edd857d356",
+      "words": 2
+    },
+    {
+      "hash": "37c88466d29fedd227adc582b9189ecf929725e37b3866b9cb8e2b94c63a58b4",
+      "words": 1
+    },
+    {
+      "hash": "3b92a591087a971df6fbccc49a7d4e5c3de0161eba62410e9eef13ff98bb124f",
+      "words": 2
+    },
+    {
+      "hash": "4e19fbca1c35eb583a34082e31f0c948831483542fefdde4a902ea2bbb02e02d",
+      "words": 2
+    },
+    {
+      "hash": "50112f96770211dd7b0bc3b477b808446227e3a1f208b7de949e083c4a3e3846",
+      "words": 2
+    },
+    {
+      "hash": "511ca23c5828acf87eacd1c751e4062cac2f017ec8bfad7598b948739d3e6bc6",
+      "words": 1
+    },
+    {
+      "hash": "51c2e8e58eaa5844d7ab46d2f46107f7c75bd9889c567a2f21b233b0f38ae2c7",
+      "words": 2
+    },
+    {
+      "hash": "56b566969e42354f47b55468c1494f2ea5d298347ddbac4b1d9a1ab6c6789c5b",
+      "words": 2
+    },
+    {
+      "hash": "779bb33170e49b6da202d9dbee2007eaadf831f1c4aed55497712326c4113271",
+      "words": 2
+    },
+    {
+      "hash": "785f804e1ef3fc68843cbf304a0382354027ad02e223d1bf9562b948d275ea44",
+      "words": 1
+    },
+    {
+      "hash": "787b4101f0460a1ff621f91ba9c21bbe0b39fdfca7f7507ead92483da59fc334",
+      "digits": 10
+    },
+    {
+      "hash": "7be41fec34eaf125de1d9cdf88e6c71d40420776a493afeaf067c51c76900397",
+      "words": 2
+    },
+    {
+      "hash": "7d1f0ab990ab438275ad38e4857034a0bd589f4eadf8c5c43ae32cdd3ceb891e",
+      "words": 1
+    },
+    {
+      "hash": "7ed42aefa7e4edaf9c99b288b92ded848dd64da4c8b9049acc09d949be0fbd9a",
+      "words": 2
+    },
+    {
+      "hash": "8d1f5d2beee583c931452a150dd2b42ed00bb179d9db07a7bed87574ddaa46ea",
+      "words": 1
+    },
+    {
+      "hash": "9599eb942971d83078ca6ca4f4e4f7c99e0261a203110db07777e180fd82f03c",
+      "words": 2
+    },
+    {
+      "hash": "9d110976f3c6eebb50d83abbc26d7fd3dfd86dff404161c0d3afe1ad92aa05b2",
+      "words": 1
+    },
+    {
+      "hash": "a03afcc84632bef45d2edf0a8dda3b9fe8dc2ed0dcbeba3d5e182772e52a3a63",
+      "words": 3
+    },
+    {
+      "hash": "aa1c325ad7835754564bd7b97ec975931f2a6a04e474d0f62b45b60f62a41b58",
+      "words": 1
+    },
+    {
+      "hash": "adcbb5c1f42077ce9a0d178d1ea789d7ea7707a4ca641e2ef8e4179d0cc4e2ed",
+      "words": 1
+    },
+    {
+      "hash": "b0ff4252ef2c355badf5e91f10f2341660903c548d1894967aa42aea6ebcc62c",
+      "words": 2
+    },
+    {
+      "hash": "b57a8a14550065129edead0b05531e5ecf3e57f92074821dbe16a75bc1469e7e",
+      "words": 1
+    },
+    {
+      "hash": "ba682500e1eb940d4654ffb31bf225f5bea2e4d0dcb5d4204ab4fb1356e15590",
+      "words": 2
+    },
+    {
+      "hash": "c15af03685f329d2d4409255e6fc218cb91d356083dfdbe9cf980f7cb98afc37",
+      "words": 2
+    },
+    {
+      "hash": "c6807eceb78c2ddf057c300dbbfe5453b225749120232222956870bbc115b59e",
+      "words": 1
+    },
+    {
+      "hash": "e18564a0a5858a112fa83f0043b2ae45be4d0300a5b4ff1131dfbcfd88f57e28",
+      "words": 1
+    },
+    {
+      "hash": "f3291524f917a159b3d17f1340aa65dea21754cad8a00e2afd00bb97d0184427",
+      "words": 2
+    },
+    {
+      "hash": "f5cf6877b85061bdc70e7733662fe060c70985bae1a4b116b244cbb16f70afa9",
+      "words": 1
+    },
+    {
+      "hash": "fb786d80e33d914cb7ae1bc1d17bb16e6cad2e949288513a3a7ebc123f8a7601",
+      "words": 1
+    }
+  ]
+}

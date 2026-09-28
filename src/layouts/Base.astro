@@ -1,0 +1,111 @@
+---
+/**
+ * The frame every page shares: head metadata, the header with the register switch, footer.
+ *
+ * The switch is two links, not a toggle: each version has its own URL, so a recruiter can
+ * forward the plain page and an engineer can be sent straight to the technical one (ADR 002).
+ * `counterpart` is the equivalent page in the other register — never just its home, so the
+ * switch keeps the reader where they were.
+ */
+import { absoluteUrl, path } from '../config/site';
+import { profile } from '../lib/profile';
+import type { Register } from '../lib/view';
+
+interface Props {
+  /** Page title, without the site name. */
+  title: string;
+  /** Meta description: one sentence, plain, no caveated figures. */
+  description: string;
+  /** Site-root-relative path of this page, for the canonical URL. */
+  path: string;
+  register: Register;
+  /** The equivalent page in the other register. */
+  counterpart: string;
+  /** Structured data for search engines and assistants, when the page describes the person. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, path: pagePath, register, counterpart, jsonLd } = Astro.props;
+const { person } = profile;
+
+const NAV: Record<Register, Array<{ href: string; label: string }>> = {
+  plain: [
+    { href: path('/#experience'), label: 'Experience' },
+    { href: path('/work/padelgpt/'), label: 'Case study' },
+    { href: path('/#contact'), label: 'Contact' },
+  ],
+  technical: [
+    { href: path('/technical/#systems'), label: 'Systems' },
+    { href: path('/technical/evaluation/'), label: 'Evaluation' },
+    { href: path('/technical/#career'), label: 'Career' },
+    { href: path('/technical/#contact'), label: 'Contact' },
+  ],
+};
+
+const home = register === 'plain' ? path('/') : path('/technical/');
+const plainHref = register === 'plain' ? path(pagePath) : path(counterpart);
+const technicalHref = register === 'technical' ? path(pagePath) : path(counterpart);
+const fullTitle = `${title} · ${person.name}`;
+const canonical = absoluteUrl(pagePath);
+const current = path(pagePath);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={person.name} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111114" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href={path('/favicon.svg')} type="image/svg+xml" />
+    <link rel="stylesheet" href={path('/styles/global.css')} />
+    {jsonLd !== undefined && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap site-header__bar">
+        <a class="brand" href={home}>{person.name}</a>
+        <nav class="register" aria-label="Version of this page">
+          <a href={plainHref} aria-current={register === 'plain' ? 'page' : undefined}>Plain English</a>
+          <a href={technicalHref} aria-current={register === 'technical' ? 'page' : undefined}>Technical</a>
+        </nav>
+      </div>
+      <div class="wrap">
+        <nav class="site-nav" aria-label="Sections">
+          {NAV[register].map((item) => (
+            <a href={item.href} aria-current={item.href === current ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p class="footer-links">
+          <a href={`mailto:${person.email}`}>{person.email}</a>
+          <a href={person.links.linkedin}>LinkedIn</a>
+          <a href={person.links.github}>GitHub</a>
+        </p>
+        <p>
+          Every number on this site comes from a named source, and a number that could mislead on its
+          own carries its limit beside it. Both rules are checked every time the site is built.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

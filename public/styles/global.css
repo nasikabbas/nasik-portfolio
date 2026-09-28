@@ -1,0 +1,784 @@
+/* Design system for nasikabbas.com.
+
+   Written for the reader who arrives first: a recruiter or HR partner, often on a phone, often
+   skimming. So the priorities are, in order: large readable type, a short line length, numbers
+   that stand out, dates and titles that can be found without reading, and generous space. No
+   web fonts (the system stack is fast and familiar) and no client JavaScript.
+
+   Every colour is a token on :root and redefined for dark mode, so a new component inherits
+   both themes by using tokens rather than literals. */
+
+:root {
+  --paper: #fbfaf6;
+  --surface: #ffffff;
+  --ink: #16161b;
+  --ink-2: #44444e; /* body-secondary: ~9:1 on paper */
+  --ink-3: #676773; /* captions and meta: ~5:1 on paper */
+  --rule: #e6e2d8;
+  --rule-strong: #d3cec2;
+  --accent: #1b4d82; /* links and figures: ~8:1 on paper */
+  --accent-wash: #e9eff6;
+  --caveat-wash: #f6f2e8;
+  --shadow: 0 1px 2px rgb(20 20 30 / 5%), 0 10px 28px -18px rgb(20 20 30 / 22%);
+  --radius: 14px;
+  --radius-sm: 9px;
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --text: clamp(1.0625rem, 1.01rem + 0.22vw, 1.1875rem); /* 17px → 19px */
+  --small: 0.9rem;
+  --tiny: 0.78rem;
+  --measure: 40rem;
+  --wide: 70rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #111114;
+    --surface: #19191e;
+    --ink: #ececf0;
+    --ink-2: #bdbdc8;
+    --ink-3: #93939f;
+    --rule: #2a2a31;
+    --rule-strong: #3a3a43;
+    --accent: #8fbaea;
+    --accent-wash: #16263a;
+    --caveat-wash: #211e17;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 28px -18px rgb(0 0 0 / 60%);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 var(--text) / 1.62 var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 10;
+  background: var(--surface);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 1rem;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────────────── */
+
+.site-header {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.site-header__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding-block: 0.9rem;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.1rem;
+  font-size: var(--small);
+}
+
+.site-nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+  padding-block: 0.3rem;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* The register switch: two segments, the current one filled. A link, not a toggle, so each
+   version has its own URL and can be forwarded. */
+.register {
+  display: inline-flex;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 3px;
+  font-size: var(--small);
+  background: var(--surface);
+}
+
+.register a {
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.register a[aria-current='page'] {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────────────────────── */
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2.3rem, 1.6rem + 3vw, 3.6rem);
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 1.9rem);
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+h4 {
+  font-size: 1.05rem;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+strong.fig {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.fig--nowrap {
+  white-space: nowrap;
+}
+
+.fig-note {
+  font-size: 0.72em;
+  line-height: 0;
+  margin-left: 0.1em;
+}
+
+.fig-note a {
+  text-decoration: none;
+  padding: 0 0.12em;
+}
+
+.eyebrow {
+  font-size: var(--tiny);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 0.75rem;
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────────────────── */
+
+.hero {
+  padding-block: clamp(2.5rem, 1.5rem + 5vw, 5rem) clamp(2rem, 1.5rem + 3vw, 3.5rem);
+}
+
+.hero h1 {
+  margin-bottom: 1rem;
+}
+
+.lede {
+  font-size: clamp(1.3rem, 1.1rem + 1vw, 1.75rem);
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  font-weight: 500;
+  max-width: 34rem;
+  margin: 0 0 1.25rem;
+  text-wrap: balance;
+}
+
+/* A case study's intro is two or three sentences: headline size would make it a wall. */
+.lede--long {
+  font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.35rem);
+  line-height: 1.5;
+  font-weight: 450;
+  max-width: 44rem;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.hero .summary p {
+  color: var(--ink-2);
+  max-width: var(--measure);
+  margin: 0 0 0.85rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.05rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--small);
+}
+
+.button--primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.button:hover {
+  border-color: var(--ink);
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────────────────── */
+
+.section {
+  padding-block: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  border-top: 1px solid var(--rule);
+}
+
+.section__intro {
+  color: var(--ink-2);
+  max-width: var(--measure);
+  margin: -0.5rem 0 1.75rem;
+}
+
+/* ── Proof cards ────────────────────────────────────────────────────────────────────── */
+
+/* Two by two from tablet width up. Four narrow columns forced "9.7 seconds vs 4.8 hours" onto
+   three lines; a fixed pair keeps every value on one line and gives labels room to read. */
+.proof {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .proof {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1.1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card__tag {
+  font-size: var(--tiny);
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.card__value {
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.3rem);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin: 0;
+}
+
+.card__value .vs {
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0;
+  margin-inline: 0.2em;
+}
+
+.card__label {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.card__caveat {
+  margin: 0.25rem 0 0;
+  padding: 0.55rem 0.7rem;
+  background: var(--caveat-wash);
+  border-radius: var(--radius-sm);
+  font-size: var(--tiny);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.card__caveat strong {
+  color: var(--ink);
+}
+
+.card__source {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: var(--tiny);
+  color: var(--ink-3);
+}
+
+/* ── "What I do" ────────────────────────────────────────────────────────────────────── */
+
+.pillars {
+  display: grid;
+  gap: 1.75rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.pillars h3 {
+  margin-bottom: 0.5rem;
+}
+
+.pillars p {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+/* ── Feature link (case study) ──────────────────────────────────────────────────────── */
+
+.feature {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  text-decoration: none;
+  max-width: 48rem;
+}
+
+.feature:hover {
+  border-color: var(--rule-strong);
+}
+
+.feature h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.6rem);
+  margin-bottom: 0.6rem;
+}
+
+.feature p {
+  margin: 0 0 0.9rem;
+  color: var(--ink-2);
+}
+
+.feature__cta {
+  font-weight: 650;
+  color: var(--accent);
+}
+
+/* ── Timeline ───────────────────────────────────────────────────────────────────────── */
+
+.role {
+  padding-block: 1.75rem;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: 0.35rem 2.5rem;
+}
+
+.role:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+@media (min-width: 52rem) {
+  .role {
+    grid-template-columns: 12rem minmax(0, 1fr);
+  }
+}
+
+.role__when {
+  font-size: var(--small);
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.2rem;
+}
+
+.role__org {
+  font-size: 1.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.role__about {
+  margin: 0 0 1.1rem;
+  color: var(--ink-2);
+  font-size: var(--small);
+  max-width: var(--measure);
+}
+
+.position + .position {
+  margin-top: 1.5rem;
+}
+
+.position__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.position__period {
+  font-size: var(--small);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.position__about {
+  margin: 0 0 0.6rem;
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+.bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--measure);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 1.15rem;
+  margin-bottom: 0.55rem;
+}
+
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.72em;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+/* ── Education, contact ─────────────────────────────────────────────────────────────── */
+
+.facts {
+  display: grid;
+  gap: 1.75rem 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+.facts h3 {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.facts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  margin-bottom: 0.45rem;
+}
+
+.facts .meta {
+  display: block;
+  color: var(--ink-3);
+  font-size: var(--small);
+}
+
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  box-shadow: var(--shadow);
+  max-width: 44rem;
+}
+
+.contact-card p {
+  margin: 0 0 1rem;
+}
+
+/* ── Case study ─────────────────────────────────────────────────────────────────────── */
+
+.study h2 {
+  margin-top: 0;
+}
+
+.study .prose h3 {
+  margin: 1.75rem 0 0.5rem;
+}
+
+.pull {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+  line-height: 1.45;
+  font-weight: 550;
+  border-left: 3px solid var(--accent);
+  padding: 0.2rem 0 0.2rem 1rem;
+  margin: 1.5rem 0;
+  max-width: var(--measure);
+}
+
+.two-col {
+  display: grid;
+  gap: 1rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+}
+
+.panel h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.panel li {
+  margin-bottom: 0.4rem;
+}
+
+.chat {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 34rem;
+  margin: 1rem 0 0.4rem;
+}
+
+.chat__msg {
+  border-radius: var(--radius);
+  padding: 0.7rem 0.9rem;
+  font-size: var(--small);
+  line-height: 1.5;
+  border: 1px solid var(--rule);
+}
+
+.chat__msg b {
+  display: block;
+  font-size: var(--tiny);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.2rem;
+}
+
+.chat__msg--player {
+  background: var(--surface);
+  margin-right: 2.5rem;
+}
+
+.chat__msg--reply {
+  background: var(--accent-wash);
+  margin-left: 2.5rem;
+}
+
+.chat__caption {
+  font-size: var(--tiny);
+  color: var(--ink-3);
+  max-width: 34rem;
+}
+
+/* ── Code and terms (technical register) ────────────────────────────────────────────── */
+
+code {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--accent-wash);
+  padding: 0.08em 0.35em;
+  border-radius: 5px;
+}
+
+/* ── Notes and sources ──────────────────────────────────────────────────────────────── */
+
+.notes {
+  font-size: var(--small);
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+.notes h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
+}
+
+.notes ol,
+.notes ul {
+  margin: 0 0 1.25rem;
+  padding-left: 1.2rem;
+}
+
+.notes li {
+  margin-bottom: 0.45rem;
+}
+
+.notes li:target {
+  background: var(--caveat-wash);
+  border-radius: 6px;
+  outline: 6px solid var(--caveat-wash);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding-block: 2rem 3rem;
+  font-size: var(--small);
+  color: var(--ink-3);
+}
+
+.site-footer p {
+  margin: 0 0 0.5rem;
+  max-width: var(--measure);
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+}
+
+/* ── Print: a clean paper copy for anyone who saves the page as a PDF ───────────────── */
+
+@media print {
+  :root {
+    --paper: #fff;
+    --surface: #fff;
+    --shadow: none;
+  }
+  .site-header,
+  .site-footer,
+  .actions,
+  .skip-link,
+  .register {
+    display: none;
+  }
+  body {
+    font-size: 11pt;
+  }
+  .section {
+    padding-block: 1.2rem;
+    break-inside: avoid-page;
+  }
+  a {
+    color: inherit;
+  }
+}
