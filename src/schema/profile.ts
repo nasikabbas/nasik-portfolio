@@ -57,12 +57,27 @@ export const FigureEntrySchema = z.object({
  */
 export const LineSchema = z.union([z.string().min(1), Statement]);
 
+const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
+
+/**
+ * A role's dates, always to the month: `Jan 2024 – present`, `Jan 2018 – Mar 2021`, or
+ * `Jun – Aug 2014` within one year. Years alone read as vague on a CV and can't be checked against
+ * a reference, and he asked for months (2026-09-28) — so a year-only period fails the parse rather
+ * than slipping back in with the next role added.
+ */
+export const Period = z
+  .string()
+  .regex(
+    new RegExp(`^${MONTH} \\d{4} – (?:${MONTH} \\d{4}|present)$|^${MONTH} – ${MONTH} \\d{4}$`),
+    'A period is "Mon YYYY – Mon YYYY", "Mon YYYY – present" or "Mon – Mon YYYY", with an en dash.',
+  );
+
 /** A position inside a role block — a job title, or one venture inside the founder years. */
 export const PositionSchema = z.object({
   title: z.string().min(1),
   /** Set when the position belongs to a different organisation than its block (the ventures). */
   org: z.string().min(1).optional(),
-  period: z.string().min(1),
+  period: Period,
   /** One plain sentence on what the product or company is, for a reader who has never heard of it. */
   about: LineSchema.optional(),
   /** Outcomes in plain words, for the default register. */
@@ -77,7 +92,7 @@ export const RoleSchema = z.object({
   org: z.string().min(1),
   /** What the organisation is, in one plain line. */
   about: LineSchema,
-  period: z.string().min(1),
+  period: Period,
   location: z.string().min(1).optional(),
   positions: z.array(PositionSchema).min(1),
   /** Where this role's statements come from. Printed by the gate; never rendered. */

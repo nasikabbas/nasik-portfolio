@@ -15,6 +15,21 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [4.1.0] — 2026-09-29
+
+**Why MINOR:** existing dates gain detail; nothing published changes meaning.
+
+### Added
+- **Months on every role.** Experience now reads to the month — PadelOS from Jan 2024, PadelGPT from
+  Jan 2025, and so on down to the 2014 internship. A year-only date now fails the build.
+
+### Fixed
+- **Alignment on wide screens.** The prose sections — "What we're building now" and the case studies'
+  narrative sections — and "About the numbers" now line up with the rest of the page; they had been
+  centred in a narrower column, and the notes' divider stopped halfway across.
+- Bullet points no longer leave a single word on their last line, and "co‑founder" no longer breaks
+  across two lines.
+
 ## [4.0.0] — 2026-09-29
 
 **Why MAJOR:** a published claim is withdrawn.

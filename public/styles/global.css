@@ -125,6 +125,17 @@ a:hover {
   max-width: var(--measure);
 }
 
+/* A prose section keeps the page's container, so its text starts where every other section's does;
+   only the text is held to the reading measure. With the measure on `.wrap` itself, `margin: 0 auto`
+   centred the narrowed box and prose sections sat well to the right of their neighbours. */
+.wrap.prose {
+  max-width: var(--wide);
+}
+
+.wrap.prose > * {
+  max-width: var(--measure);
+}
+
 .prose p,
 .prose ul,
 .prose ol {
@@ -229,7 +240,8 @@ h4 {
   font-size: 1.05rem;
 }
 
-p {
+p,
+li {
   text-wrap: pretty;
 }
 
@@ -709,9 +721,14 @@ code {
 
 /* ── Notes and sources ──────────────────────────────────────────────────────────────── */
 
+/* The measure goes on the content, not the section: a full-bleed section keeps its rule across the
+   page and its container aligned with every other section. */
 .notes {
   font-size: var(--small);
   color: var(--ink-2);
+}
+
+.notes .wrap > * {
   max-width: var(--measure);
 }
 
