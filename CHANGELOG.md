@@ -15,6 +15,13 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [4.1.3] — 2026-09-29
+
+**Why PATCH:** a contact link changes; no claim does.
+
+### Changed
+- **LinkedIn link** now points to the updated profile, linkedin.com/in/nasik-abbas.
+
 ## [4.1.2] — 2026-09-29
 
 **Why PATCH:** the uptime check itself is corrected; nothing a reader sees changes.
