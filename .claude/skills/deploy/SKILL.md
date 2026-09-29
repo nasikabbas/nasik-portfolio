@@ -76,6 +76,24 @@ Pages caches for 600 seconds. If a check fails **immediately after a deploy**, r
 and `expires` before diagnosing anything — a stale edge response is not a broken deploy, and treating
 it as one sends you looking in the wrong place. Wait out the TTL and re-check once.
 
+## When someone says the site won't open
+
+Read the error before touching anything — each kind points at a different layer:
+
+| What they see | Layer | First check |
+|---|---|---|
+| "Server can't be found", `ERR_NAME_NOT_RESOLVED`, `DNS_PROBE_FINISHED_NXDOMAIN` | DNS — the request never reached the site | The latest **Uptime** run (`gh run list --workflow=uptime.yml --limit 3`). Green: it's the visitor's network DNS — retry, switch Wi‑Fi ↔ mobile data, or set the router's DNS to 1.1.1.1 / 8.8.8.8. Red on *Registration*: the domain is on hold at the registrar. |
+| GitHub's "404 — There isn't a GitHub Pages site here" | Pages ↔ domain binding | Settings → Pages: the custom domain is still `nasikabbas.com`, and the last deploy succeeded. |
+| A certificate warning | HTTPS | Settings → Pages: the certificate's state, and *Enforce HTTPS*. |
+| The page loads but looks wrong | The site | `npm run check:live`, then screenshots: `npx tsx scripts/shots.ts https://nasikabbas.com <dir>`. |
+
+For a one-off look from outside this network:
+`curl -s "https://dns.google/resolve?name=nasikabbas.com&type=A"`.
+
+**A green Uptime run with a failing visitor is not a site bug.** *(2026-09-29: one phone on one Wi‑Fi
+network failed the lookup while ten public resolvers, the domain's own nameservers and the site were
+all fine.)*
+
 ## Rollback
 
 Pages serves whatever `main` last built. So a rollback is a revert:
