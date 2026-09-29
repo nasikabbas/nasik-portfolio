@@ -109,6 +109,12 @@ retrievable when someone asks an assistant about this person is one of the reaso
 Moving origin or sub-path is a two-constant edit in `src/config/site.ts`; nothing in `src/` may
 hard-code either.
 
+**Uptime is checked every hour, from outside** (`.github/workflows/uptime.yml`): the domain is not on
+hold or near expiry, it resolves through its own nameservers and four public resolvers, and the served
+pages pass the build's gates. A failed run emails the owner, and the run history answers "was the site
+down at that moment?" with evidence. It cannot see a single visitor's network DNS — the deploy skill's triage
+table covers that case.
+
 ## Conventions
 
 - **Node ≥ 22.12** (`.nvmrc` pins 24). TypeScript strict, `noUncheckedIndexedAccess` on.

@@ -133,6 +133,10 @@ curl -s -o /dev/null -w '%{http_code}\n' https://nasikabbas.com/styles/global.cs
   repository. Withdrawing something sensitive in future raises the same question — ask, never assume.
 - **Deploy:** push to `main` → `.github/workflows/deploy.yml` → GitHub Pages. CI runs `check` then
   `build` on every push and PR. **A red CI is not a deploy candidate.**
+- **Uptime:** `.github/workflows/uptime.yml` runs hourly from outside — registration (no hold, not
+  near expiry), DNS through the domain's own nameservers and four public resolvers, then
+  `check:live`. When someone reports the site down, read the error type first and follow the deploy
+  skill's triage table: a DNS error with a green Uptime run is the visitor's network, not the site.
 - **`public/CNAME` must agree with `SITE_URL`.** The apex domain is functional, not decorative:
   `robots.txt` is only ever read at a domain root, so on a Pages sub-path an AI-crawler allowlist is
   inert — and being retrievable when someone asks an assistant about this person is one reason the site

@@ -1,0 +1,100 @@
+name: Uptime
+
+# Is the site up for the world right now? Answered every hour, from outside, so a report that
+# "people can't open it" is checked against evidence rather than guessed at.
+#
+# Why this exists: on 2026-09-29 a phone failed to look up the domain (ERR_NAME_NOT_RESOLVED) while
+# every public resolver, the domain's own nameservers and the site itself were fine — the fault was
+# that visitor's network DNS. This job cannot see one network's DNS. It says whether the site was up
+# for everyone else, and it fails loudly on the outages that would take it down for everyone: a
+# registrar hold (a new domain is suspended if its contact details go unverified), a registration
+# about to expire, records missing from DNS, or pages that no longer serve correctly.
+#
+# GitHub emails a failed scheduled run to whoever last edited the cron line. Scheduled runs pause after
+# 60 days without repository activity; re-enable the workflow from the Actions tab if that happens.
+
+on:
+  schedule:
+    - cron: '17 * * * *' # hourly, off the top of the hour, when GitHub's scheduler is busiest
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: Check another domain's registration and DNS instead (to prove the checks fail); pages are always this site's.
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: true
+
+jobs:
+  uptime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      # The domain is read from public/CNAME, the file GitHub Pages serves it from, so there is one
+      # place to change it. The registry lookup is Verisign's RDAP service, which covers .com.
+      - name: Registration — no hold, and not about to expire
+        env:
+          DOMAIN_INPUT: ${{ inputs.domain }}
+        run: |
+          domain="${DOMAIN_INPUT:-$(tr -d '[:space:]' < public/CNAME)}"
+          rdap="$(curl -fsS --retry 3 --max-time 20 "https://rdap.verisign.com/com/v1/domain/${domain}")"
+          echo "status: $(jq -c '.status' <<<"$rdap")"
+          if jq -e '.status | map(test("hold"; "i")) | any' <<<"$rdap" > /dev/null; then
+            echo "::error::${domain} is on hold — check the registrar's dashboard (unverified contact details suspend a new domain)."
+            exit 1
+          fi
+          expires="$(jq -r '.events[] | select(.eventAction == "expiration") | .eventDate' <<<"$rdap")"
+          if [ -z "$expires" ]; then
+            echo "::error::the registry record for ${domain} has no expiration date — check the RDAP response."
+            exit 1
+          fi
+          days=$(( ( $(date -d "$expires" +%s) - $(date +%s) ) / 86400 ))
+          echo "registration expires ${expires} (${days} days)"
+          if [ "$days" -lt 30 ]; then
+            echo "::error::${domain} expires in ${days} days — renew it."
+            exit 1
+          fi
+
+      # Ask the domain's own nameservers (read from the delegation, so a change of DNS host needs no
+      # edit here) and four independent public resolvers. Any one returning no address fails the run.
+      - name: DNS — the domain's nameservers and four public resolvers
+        env:
+          DOMAIN_INPUT: ${{ inputs.domain }}
+        run: |
+          command -v dig > /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq dnsutils; }
+          domain="${DOMAIN_INPUT:-$(tr -d '[:space:]' < public/CNAME)}"
+          # Runs use `bash -eo pipefail`: `|| true` keeps one empty answer from ending the step before
+          # it can say which server gave it.
+          nameservers="$(dig +short +time=5 +tries=2 NS "$domain" @1.1.1.1 | sed 's/\.$//' || true)"
+          if [ -z "$nameservers" ]; then
+            echo "::error::no nameservers found for ${domain}"
+            exit 1
+          fi
+          fail=0
+          for server in $nameservers 8.8.8.8 1.1.1.1 9.9.9.9 208.67.222.222; do
+            addresses="$(dig +short +time=5 +tries=2 A "$domain" @"$server" | grep -E '^[0-9.]+$' | sort | tr '\n' ' ' || true)"
+            if [ -z "$addresses" ]; then
+              echo "::error::${server} returned no address for ${domain}"
+              fail=1
+            else
+              echo "${server}: ${addresses}"
+            fi
+          done
+          exit "$fail"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      # The pages themselves: every page and asset returns 200 and passes the build's own gates as
+      # served, and http:// redirects to https://.
+      - run: npm run check:live

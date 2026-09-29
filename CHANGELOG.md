@@ -15,6 +15,16 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [4.1.1] — 2026-09-29
+
+**Why PATCH:** nothing a reader sees changes; the site is now watched.
+
+### Added
+- **An hourly uptime check, run from outside:** the domain is not on hold or close to expiring, it
+  resolves through its own nameservers and four public resolvers, and every page still serves
+  correctly. A failure emails the owner, so "the site is down" can be told apart from one visitor's
+  network in seconds.
+
 ## [4.1.0] — 2026-09-29
 
 **Why MINOR:** existing dates gain detail; nothing published changes meaning.
