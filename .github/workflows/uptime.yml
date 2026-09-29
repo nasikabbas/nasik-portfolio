@@ -26,14 +26,19 @@ on:
 permissions:
   contents: read
 
+# Runs queue rather than cancel: a check that starts must finish, or it is not evidence.
 concurrency:
   group: uptime
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   uptime:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Explicit, so every step runs under `bash -eo pipefail`; left unset, GitHub uses plain `bash -e`.
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v5
 
@@ -44,7 +49,10 @@ jobs:
           DOMAIN_INPUT: ${{ inputs.domain }}
         run: |
           domain="${DOMAIN_INPUT:-$(tr -d '[:space:]' < public/CNAME)}"
-          rdap="$(curl -fsS --retry 3 --max-time 20 "https://rdap.verisign.com/com/v1/domain/${domain}")"
+          if ! rdap="$(curl -fsS --retry 3 --max-time 20 "https://rdap.verisign.com/com/v1/domain/${domain}")"; then
+            echo "::error::the registry has no record of ${domain} (or did not answer) — is it still registered?"
+            exit 1
+          fi
           echo "status: $(jq -c '.status' <<<"$rdap")"
           if jq -e '.status | map(test("hold"; "i")) | any' <<<"$rdap" > /dev/null; then
             echo "::error::${domain} is on hold — check the registrar's dashboard (unverified contact details suspend a new domain)."
@@ -70,8 +78,8 @@ jobs:
         run: |
           command -v dig > /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq dnsutils; }
           domain="${DOMAIN_INPUT:-$(tr -d '[:space:]' < public/CNAME)}"
-          # Runs use `bash -eo pipefail`: `|| true` keeps one empty answer from ending the step before
-          # it can say which server gave it.
+          # Under pipefail, `|| true` keeps one empty answer from ending the step before it can say
+          # which server gave it.
           nameservers="$(dig +short +time=5 +tries=2 NS "$domain" @1.1.1.1 | sed 's/\.$//' || true)"
           if [ -z "$nameservers" ]; then
             echo "::error::no nameservers found for ${domain}"

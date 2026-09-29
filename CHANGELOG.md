@@ -15,6 +15,15 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [4.1.2] — 2026-09-29
+
+**Why PATCH:** the uptime check itself is corrected; nothing a reader sees changes.
+
+### Fixed
+- **The uptime check no longer cancels itself.** A second run used to cancel one already in
+  progress; runs now queue, so every check that starts finishes. It also runs every step in strict
+  shell mode, and says plainly when the registry has no record of the domain.
+
 ## [4.1.1] — 2026-09-29
 
 **Why PATCH:** nothing a reader sees changes; the site is now watched.
