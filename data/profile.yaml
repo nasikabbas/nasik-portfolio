@@ -544,9 +544,6 @@ roles:
         plain:
           - Its first product let people with paralysis control a computer with their eyes.
           - Built the research team, starting with a prospective co‑founder from MIT.
-          - >-
-            Closed it in 2023: a company like this needs a full-time technical co‑founder, and it
-            never had one.
         technical:
           - >-
             Isaac-1, an MVP that lets quadriplegic users control digital devices with eye
@@ -556,9 +553,6 @@ roles:
             MIT, and grew it from there. The concept: a wearable visor and camera, a high-bandwidth
             wireless link, and an electrode array in the visual cortex that produces a spatial
             pattern of phosphenes.
-          - >-
-            Closed in 2023: a brain–computer interface company needs a full-time technical
-            co‑founder, and it never had one.
       - title: Technical Co-founder
         org: Schooling Studio
         period: Apr 2021 – Mar 2023

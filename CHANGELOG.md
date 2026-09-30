@@ -15,6 +15,15 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [5.0.0] — 2026-09-30
+
+**Why MAJOR:** a published statement is withdrawn.
+
+### Removed
+- **The reason given for Spectre Bionics closing.** The entry now says what the company built and who
+  built it; its dates show when it ran. The 4.0.0 entry below is reworded to match, as 2.0.0 did for
+  earlier entries, so the withdrawn line is not restated.
+
 ## [4.1.3] — 2026-09-29
 
 **Why PATCH:** a contact link changes; no claim does.
@@ -61,8 +70,7 @@ and on a site whose argument is honest measurement that is the one thing that ca
 **Why MAJOR:** a published claim is withdrawn.
 
 ### Removed
-- **A funding detail from the Spectre Bionics entry.** The entry now says why the company closed — it
-  needed a full-time technical co-founder and never had one — and describes no investment. **The
+- **A funding detail from the Spectre Bionics entry.** The entry no longer describes any investment. **The
   withdrawn detail is not restated here**, for the same reason as in 2.0.0: restating it would
   republish it.
 
