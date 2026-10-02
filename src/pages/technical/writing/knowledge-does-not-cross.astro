@@ -1,0 +1,242 @@
+---
+/**
+ * Essay: knowledge learned by one person's agent does not reach a colleague's.
+ *
+ * Reviewed by him on 2026-10-02 (draft in his working area). Every figure is from WikiSkill, read in
+ * full; the absence claim rests on an arXiv search made the same day, and says so. Earlier outlines
+ * held that three papers named the gap — their full text does not, and the essay says that too.
+ */
+import EssayBody from '../../../components/EssayBody.astro';
+import Notes from '../../../components/Notes.astro';
+import Rich from '../../../components/Rich.astro';
+import { SITE_URL, path } from '../../../config/site';
+import Base from '../../../layouts/Base.astro';
+import { assertReferencesCover, essay, longDate, type Block, type Reference } from '../../../lib/essays';
+import { FigureLedger } from '../../../lib/figures';
+import { profile } from '../../../lib/profile';
+
+const meta = essay('knowledge-does-not-cross');
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+const p = (text: string): Block => ({ kind: 'p', parts: r(text) });
+const h2 = (text: string): Block => ({ kind: 'h2', text });
+
+const references: Reference[] = [
+  {
+    title: 'Tang et al., WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution (2026)',
+    url: 'https://arxiv.org/abs/2608.27454',
+    note: 'read in full; §1, §3.2, §4.2.2, §5.1 and Tables 1–3',
+  },
+  {
+    title: 'Multi-Agent Transactive Memory (2026)',
+    url: 'https://arxiv.org/abs/2606.19911',
+    note: 'abstract',
+  },
+  {
+    title: 'Valhalla: A Layered Knowledge-State and Service-Governance Framework for Long-Term Scientific Knowledge Work (2026)',
+    url: 'https://arxiv.org/abs/2608.15193',
+    note: 'abstract',
+  },
+  {
+    title: 'SkillsVote: Lifecycle Governance of Agent Skills (2026)',
+    url: 'https://arxiv.org/abs/2605.18401',
+    note: 'full text searched for the open problem earlier drafts attributed to it; it does not state it',
+  },
+  {
+    title: 'Agent Skills for Large Language Models: Architecture, Acquisition, Security, and the Path Forward (2026)',
+    url: 'https://arxiv.org/abs/2602.12430',
+    note: 'its seven open challenges concern platforms, verification and permissions, not people',
+  },
+];
+
+const blocks: Block[] = [
+  h2('A small failure, on one machine'),
+  p('It started with something small that bothered me more than it should have.'),
+  p(
+    "On 19 September I spent a working session with an AI coding assistant, moving between three of my repositories. One of them held a production system the same assistant had helped me build over the previous months. It knew that system well, or should have. And yet it kept getting the details slightly wrong — a convention here, an edge case there, a decision we had already made and written down. That project's notes simply weren't loaded in the session. Everything it needed was on the same disk. Nothing carried it across a folder boundary.",
+  ),
+  p(
+    'What stayed with me was how it went wrong. There was no gap, no error, nothing to trip over. There was confident detail that was a little off. An absence trips no alarm, and plausible detail gets believed.',
+  ),
+  p(
+    "If knowledge won't cross a folder for one person, with everything on one machine, then “it'll be fine across a company” isn't a safe assumption. That's what this essay is about, starting with its smallest version.",
+  ),
+
+  h2('What 2026 got right'),
+  p(
+    "Credit first, because it's earned. The research on agents that learn from their own experience has moved a long way this year.",
+  ),
+  p(
+    "The clearest example I've read is WikiSkill, from Google Research (Tang et al., August 2026). It “organizes the agent workspace into three layers: a Raw Layer that stores immutable execution traces, a Wiki Layer that maintains structured knowledge, and a Skill Layer that contains evolving procedural knowledge.” An agent works through tasks; a maintainer distils what happened into the wiki; a proposer turns the wiki into better skills; and an update is kept only if it improves results. It's a tidy idea, and it works.",
+  ),
+  p('Three of its results changed how I think about this:'),
+  {
+    kind: 'list',
+    items: [
+      {
+        lead: 'The gains grow with the model.',
+        parts: r(
+          "Across five benchmarks, WikiSkill adds {es_ws_gain_small} to a 4-billion-parameter model, {es_ws_gain_mid} to a 9-billion one and {es_ws_gain_large} to a 27-billion one. Accumulated knowledge isn't a crutch for weak models. Better models use it better.",
+        ),
+      },
+      {
+        lead: 'Knowledge can stand in for size.',
+        parts: r(
+          'The 9-billion-parameter model with its skills scores {es_ws_with_skills}; the 27-billion one without them scores {es_ws_without_skills}.',
+        ),
+      },
+      {
+        lead: 'What it keeps is what matters.',
+        parts: r(
+          'Take the persistent wiki away and the average falls from {es_ws_default} to {es_ws_no_wiki}. What the agent carries between runs is worth {es_ws_wiki_worth}.',
+        ),
+      },
+    ],
+  },
+  p(
+    'So for a single agent, the problem is in a real sense solved. An agent can now learn from its own work and keep what it learned.',
+  ),
+
+  h2('Borrowed knowledge can hurt'),
+  p(
+    "The part of the paper I keep coming back to is the experiment where one model's skills are handed to another. It's the closest thing in the literature to a lesson passing between colleagues.",
+  ),
+  p(
+    'Sometimes borrowing beats learning for yourself: one model reaches {es_ws_borrowed} on a task with skills evolved by a larger model, against {es_ws_own} with its own.',
+  ),
+  p(
+    "Sometimes it's a disaster. On a spreadsheet benchmark, skills from a small model drop a strong model from {es_ws_neg_base} to {es_ws_neg_small}, while skills from a larger model lift the same strong model to {es_ws_neg_large}. Same recipient, same task, opposite outcomes. The authors explain why: the small model's skills “encode low-level workarounds… which help the smaller model avoid execution failures but constrain stronger models.” Anyone who has inherited a colleague's clever workaround will recognise the feeling.",
+  ),
+  p(
+    "And the author is a poor judge of their own lesson's value. One model's skills lowered its own score, from {es_ws_own_before} to {es_ws_own_after}, while raising another model's from {es_ws_other_before} to {es_ws_other_after}. As the paper puts it, “the transferability of evolved skills depends on whether they capture general procedures or model-specific workarounds” — and nothing in a skill tells you which kind you're holding.",
+  ),
+  p(
+    "Two cautions before going further. These transfers are between models, not between people. Whether two colleagues' working knowledge differs that much is an open question, and nobody should quote these numbers as if it weren't. And the paper found one more thing worth keeping: letting the working agent read the knowledge base during a run made the final skills worse — {es_ws_default} down to {es_ws_reader_access} — because knowledge “obtained directly from the wiki rather than the skills… can make the resulting trajectories less informative for skill development.” Put simply, the worker shouldn't read the library during the shift, or the shift stops showing where the library is wrong.",
+  ),
+
+  h2('The seam nobody is working on'),
+  p(
+    "So here's the gap. An agent can now build up knowledge, and that knowledge can move between models. What the published work doesn't yet do is move knowledge between people — from one person's agent to a colleague's — with the people still in charge of it.",
+  ),
+  p('The nearest work is close, and deserves naming:'),
+  {
+    kind: 'list',
+    items: [
+      {
+        lead: 'Multi-Agent Transactive Memory',
+        parts: r(
+          "(June 2026) lets a population of agents share their past trajectories, so a new agent doesn't rediscover solutions. It's sharing between agents, with no people in the loop.",
+        ),
+      },
+      {
+        lead: 'Valhalla',
+        parts: r(
+          '(August 2026) lets researchers exchange structured knowledge in one shared format, and governs how language models “access, modify, and extend” it. That is sharing between people — but the governance is over what the model may do, not over who owns a piece of knowledge or how a group decides to adopt it.',
+        ),
+      },
+    ],
+  },
+  p(
+    "Neither gives the person who wrote a lesson ownership of it, says when it applies, or lets a colleague try it before relying on it. I searched arXiv on 2 October for work that does, and didn't find it.",
+  ),
+  p(
+    "I should be honest about what kind of claim that is. It's an argument from absence, and it's weaker than “the field says so”. An earlier draft of this essay said three 2026 papers named cross-team sharing as an open problem. When I went back to their full text, none of them did — one never uses the words at all. The gap may well be real. But the honest way to say it is that I looked and didn't find the work, not that someone else has declared it open.",
+  ),
+
+  h2('What a crossing mechanism has to do'),
+  p(
+    'Put that evidence next to the small failure I started with, and a way of carrying knowledge between people has to do five things.',
+  ),
+  {
+    kind: 'list',
+    ordered: true,
+    items: [
+      {
+        lead: 'Say when it holds.',
+        parts: r(
+          'A lesson without its conditions is folklore: still readable, no longer checkable, and impossible to retire when it stops being true.',
+        ),
+      },
+      {
+        lead: 'Carry its track record.',
+        parts: r(
+          "Since the author can't predict where a lesson will transfer, each one should record what it has been used with, and how that went.",
+        ),
+      },
+      {
+        lead: "Be tried before it's trusted.",
+        parts: r(
+          "Adoption is the receiver's call, made after trying it in their own work. Borrowed knowledge that quietly changes behaviour is how a {es_ws_neg_base} task becomes an {es_ws_neg_small} one.",
+        ),
+      },
+      {
+        lead: "Load itself where it's needed.",
+        parts: r(
+          "A file nobody opens is not a reservoir. What went wrong on 19 September wasn't missing knowledge; it was knowledge that didn't load at the boundary it had to cross.",
+        ),
+      },
+      {
+        lead: 'Stay out of the way mid-task.',
+        parts: r(
+          'Distil at the end of a piece of work, not during it, so the work still shows where the knowledge is wrong.',
+        ),
+      },
+    ],
+  },
+  p(
+    "There's already a working example of the fourth point, hiding in plain sight. Skills committed to a code repository travel with every clone and load automatically — for a teammate, and for a fresh agent — with nobody asking. Lessons kept in a personal notes store don't. The only difference is where the file lives.",
+  ),
+
+  h2('The missing rung'),
+  p(
+    "Most people who work closely with AI agents end up with something like a ladder of knowledge: notes on the current task, lessons that apply across their own projects, and rules that apply everywhere. My own setup has exactly this shape, and exactly this gap. What's usually missing is the rung in the middle — knowledge a team can see, borrow and correct. So a lesson can exist, be exactly what a colleague needs, and still be out of their reach.",
+  ),
+  p(
+    "Building that rung is the work. It needs knowledge that carries its own conditions and record, a receiver who decides what to adopt, and a way for it to arrive where the work actually happens. The pieces for a single agent exist and are well measured. The piece between people hasn't been built yet. When it is, the first thing worth measuring is the question the model results leave open: how much two colleagues' knowledge really differs.",
+  ),
+
+  h2('Sources'),
+  { kind: 'refs', items: references },
+];
+
+assertReferencesCover(ledger.sources(), references);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: meta.title,
+  description: meta.dek,
+  datePublished: meta.published,
+  author: { '@type': 'Person', name: profile.person.name, url: SITE_URL },
+  url: `${SITE_URL}${path(`/technical/writing/${meta.slug}/`)}`,
+};
+---
+
+<Base
+  title={meta.title}
+  description={meta.dek}
+  path={`/technical/writing/${meta.slug}/`}
+  register="technical"
+  counterpart="/writing/"
+  jsonLd={jsonLd}
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Essay · {longDate(meta.published)}</p>
+        <h1>{meta.title}</h1>
+        <p class="lede lede--long"><Rich parts={r(meta.dek)} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Essay">
+      <EssayBody blocks={blocks} />
+    </section>
+  </article>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={[]}
+    reading="Every figure here comes from the paper cited beside it, listed under Sources; the note below gives the limit that travels with the essay's most quotable number."
+  />
+</Base>
