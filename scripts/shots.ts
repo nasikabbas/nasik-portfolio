@@ -33,6 +33,10 @@ const PAGES: ReadonlyArray<{ name: string; path: string }> = [
   { name: 'case', path: '/work/padelgpt/' },
   { name: 'tech', path: '/technical/' },
   { name: 'eval', path: '/technical/evaluation/' },
+  { name: 'writing', path: '/writing/' },
+  { name: 'tech-writing', path: '/technical/writing/' },
+  { name: 'essay-knowledge', path: '/technical/writing/knowledge-does-not-cross/' },
+  { name: 'essay-authority', path: '/technical/writing/whose-opinion-counts/' },
 ];
 
 const DEVICES: ReadonlyArray<{ name: string; width: number; height: number; scale: number; mobile: boolean }> = [
