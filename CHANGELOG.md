@@ -15,6 +15,21 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [5.1.0] — 2026-10-02
+
+**Why MINOR:** new pages; nothing published changes meaning.
+
+### Added
+- **Writing.** Two essays, on the technical side: *Agents are learning. Organisations aren't.* — what
+  an agent learns still doesn't reach a colleague — and *Your agents can talk. They can't tell whose
+  opinion counts.* — the protocols connecting agents can't say who owns a decision. Each number they
+  cite is in the data file with its source, like every other number on the site, and each essay
+  lists everything it read. A plain page at `/writing/` summarises both in everyday words. "Writing"
+  is in both menus.
+
+### Changed
+- The home page's line promising essays now says two have been written, and where they are.
+
 ## [5.0.0] — 2026-09-30
 
 **Why MAJOR:** a published statement is withdrawn.

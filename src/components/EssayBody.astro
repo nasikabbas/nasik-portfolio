@@ -1,0 +1,84 @@
+---
+/**
+ * The body of an essay, from blocks resolved by the page's own figure ledger.
+ *
+ * Essays are long prose, so they are written as data — headings, paragraphs, lists, a quotation,
+ * a table, the references — and rendered here in one reading column. Numbers still reach the page
+ * only as figures by id (resolved before they arrive), so an essay obeys the same provenance rule as
+ * every other page. The references list is checked by the page against the ledger: every source a
+ * figure relies on must appear in it, or the build fails.
+ */
+import type { Block } from '../lib/essays';
+import Rich from './Rich.astro';
+
+interface Props {
+  blocks: Block[];
+}
+
+const { blocks } = Astro.props;
+
+/** A stable anchor for a heading, so a section can be linked to. */
+const anchor = (text: string): string =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+---
+
+<div class="wrap prose essay">
+  {
+    blocks.map((block) => {
+      switch (block.kind) {
+        case 'h2':
+          return <h2 id={anchor(block.text)}>{block.text}</h2>;
+        case 'p':
+          return (
+            <p>
+              <Rich parts={block.parts} />
+            </p>
+          );
+        case 'quote':
+          return (
+            <blockquote>
+              <p>
+                <Rich parts={block.parts} />
+              </p>
+            </blockquote>
+          );
+        case 'table':
+          return (
+            <table>
+              <thead>
+                <tr>{block.head.map((cell) => <th scope="col">{cell}</th>)}</tr>
+              </thead>
+              <tbody>
+                {block.rows.map((row) => (
+                  <tr>{row.map((cell) => <td>{cell}</td>)}</tr>
+                ))}
+              </tbody>
+            </table>
+          );
+        case 'refs':
+          return (
+            <ul class="refs">
+              {block.items.map((ref) => (
+                <li>
+                  {ref.url !== undefined ? <a href={ref.url}>{ref.title}</a> : ref.title}
+                  <span class="refs__note"> — {ref.note}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        case 'list': {
+          const items = block.items.map((item) => (
+            <li>
+              {item.lead !== undefined && <strong>{item.lead} </strong>}
+              <Rich parts={item.parts} />
+            </li>
+          ));
+          return block.ordered === true ? <ol class="steps">{items}</ol> : <ul class="bullets">{items}</ul>;
+        }
+      }
+    })
+  }
+</div>

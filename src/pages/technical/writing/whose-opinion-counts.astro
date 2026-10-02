@@ -1,0 +1,228 @@
+---
+/**
+ * Essay: agent protocols cannot express who owns a decision, or bring that judgement in before the
+ * work is built.
+ *
+ * Reviewed by him on 2026-10-02 (draft in his working area). The governance-gap figures and quotes
+ * are from Kang & Diponegoro, read at source; the cost-of-late figures from NASA's own record; the
+ * interruption quote from the paper's PDF. The production example is the tenancy design already on
+ * the technical pages, described as "an assistant serving sports clubs" (his wording). The
+ * experiment is his own, pre-registered; its costs are not given.
+ */
+import EssayBody from '../../../components/EssayBody.astro';
+import Notes from '../../../components/Notes.astro';
+import Rich from '../../../components/Rich.astro';
+import { SITE_URL, path } from '../../../config/site';
+import Base from '../../../layouts/Base.astro';
+import { assertReferencesCover, essay, longDate, type Block, type Reference } from '../../../lib/essays';
+import { FigureLedger } from '../../../lib/figures';
+import { profile } from '../../../lib/profile';
+
+const meta = essay('whose-opinion-counts');
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+const p = (text: string): Block => ({ kind: 'p', parts: r(text) });
+const h2 = (text: string): Block => ({ kind: 'h2', text });
+
+const references: Reference[] = [
+  {
+    title: 'Kang & Diponegoro, Governance Gaps in Agent Interoperability Protocols: What MCP, A2A, and ACP Cannot Express (2026)',
+    url: 'https://arxiv.org/abs/2606.31498',
+    note: 'abstract, Table I, §III, Table III, §IV-G, §V-B and §VII',
+  },
+  {
+    title: 'Stecklein, Dabney, Dick, Haskins, Lovell & Moroney, Error Cost Escalation Through the Project Life Cycle (NASA, 2004)',
+    url: 'https://ntrs.nasa.gov/citations/20100036670',
+    note: "abstract, from NASA's own record",
+  },
+  {
+    title: 'Mark, Gudith & Klocke, The Cost of Interrupted Work: More Speed and Stress (CHI 2008)',
+    url: 'https://www.ics.uci.edu/~gmark/chi08-mark.pdf',
+    note: "abstract, checked against the paper's PDF",
+  },
+  {
+    title: 'The loud-participant experiment (29 September 2026)',
+    note: 'our own: six decisions, three formats, three repetitions, pre-registered before it ran',
+  },
+];
+
+const blocks: Block[] = [
+  h2('Put the machinist in the room'),
+  p(
+    "Before I worked on AI, part of my work was improving how factories run, and there this lesson is old and was learned the expensive way. A part designed without the machinist, then rejected at review, has already consumed the design. The rejection isn't the costly part. The costly part is that the constraint was true from the first day, and arrived when it was no longer cheap. Concurrent engineering's answer was simple: put the machinist in the room while the part is being designed.",
+  ),
+  p(
+    "Work done through AI agents is rebuilding that old problem at a new speed. Someone's agent plans a change, writes it and tests it. The person who owns that part of the system — the database, the billing rules, the security model — sees it at review. By then it exists. Their knowledge was there all along. It just arrived after the point where it was cheap.",
+  ),
+
+  h2('Late is expensive, and agents bring “late” forward'),
+  p(
+    "How expensive is well documented, at least for big systems. NASA's study of error costs across a project's life (Stecklein et al., 2004) puts it in units. A requirements error that costs {es_nasa_req} to fix during requirements costs {es_nasa_design} at design, {es_nasa_build} during build, {es_nasa_test} in integration and test, and {es_nasa_ops} in operation.",
+  ),
+  p(
+    'Those figures come from spacecraft-class projects, and nobody has measured the factor for software built with agents. The direction is what carries over: the later a constraint arrives, the more it costs. And agents compress the build. The window between “we decided” and “it exists” can close before anyone thought to ask the person who would have said no.',
+  ),
+  p(
+    "There's a counterweight, though, and an honest design has to carry it. Asking people isn't free. A laboratory study of interrupted work (Mark et al., 2008) found that “people completed interrupted tasks in less time with no difference in quality” — and paid for it in “more stress, higher frustration, time pressure and effort.” I find that finding quietly important. Consultation costs the person consulted, even when it costs the work nothing. So the right person's judgement should arrive early, and only when it's actually needed.",
+  ),
+
+  h2('What the protocols are for'),
+  p(
+    'Two standards now connect most agent systems. MCP lets an agent use tools and data. A2A lets one agent hand a task to another. Around them sit others: ACP for exchanging messages, ANP for routing them, and ERC‑8004 for deciding which agents to trust.',
+  ),
+  p('A 2026 study by Kang and Diponegoro lays out what each was designed to answer:'),
+  {
+    kind: 'table',
+    head: ['Protocol', 'The question it answers'],
+    rows: [
+      ['MCP', 'What can an agent do?'],
+      ['A2A', 'Which agent handles this task?'],
+      ['ACP', 'How do agents exchange messages?'],
+      ['ANP', 'How do messages reach the right agent?'],
+      ['ERC‑8004', 'Which agents can be trusted?'],
+    ],
+  },
+  p(
+    'And then, in their words: “None of these design intents targets the question: How should agents collectively govern community decisions?”',
+  ),
+
+  h2('The measured gap'),
+  p(
+    'Kang and Diponegoro score all five protocols against six dimensions of governance — membership, deliberation, voting, dissent preservation, human escalation and audit — giving two points for full support and one for partial, out of twelve.',
+  ),
+  p(
+    'The results are stark. MCP and A2A score {es_gov_mcp_a2a} each. ACP and ERC‑8004 score {es_gov_acp_erc}. ANP scores {es_gov_anp}. Voting, dissent preservation and human escalation are absent from all five. Their conclusion: governance is “a missing architectural layer above current interoperability standards—not a missing feature within them.”',
+  ),
+  p(
+    'They also put a clock on it. The gap “could narrow significantly within 6–12 months through protocol extensions”, and yet, “after 6+ months of A2A being publicly available with an active extension ecosystem, zero governance extensions have been proposed or implemented.” They recommend treating it “as an urgent open problem, before the space fragments into incompatible application-layer solutions.”',
+  ),
+
+  h2("The dimension that isn't on the map"),
+  p(
+    "That taxonomy is the best map of the problem I've found, and there's one thing it doesn't contain.",
+  ),
+  p(
+    'Its voting dimension is about adding up preferences. Reputation it sets aside on purpose: trust is “a prerequisite for governance… but not itself a governance primitive”, and is already handled by ERC‑8004. Between those two sits the thing working teams actually rely on.',
+  ),
+  {
+    kind: 'quote',
+    parts: r(
+      'The person who owns a domain is not one vote among equals, and is not a reputation score. Their judgement is decisive inside their domain and advisory outside it.',
+    ),
+  },
+  p(
+    'Anyone who has worked on a real team knows this without being told. Two properties follow, and none of the five protocols can express either today:',
+  ),
+  {
+    kind: 'list',
+    items: [
+      {
+        lead: 'Scoped authority.',
+        parts: r(
+          "Ownership is per domain, not global. The database owner's call on a schema change carries a different weight from their call on button copy.",
+        ),
+      },
+      {
+        lead: 'Arrival before the work.',
+        parts: r(
+          "Authority has to reach the plan while it's still a plan. A decisive opinion delivered at review is a rejection — the machinist again.",
+        ),
+      },
+    ],
+  },
+  p(
+    'The hard part deserves saying plainly: who draws the boundaries, and what stops them hardening? An authority map nobody can challenge is just an org chart, and org charts are part of why expertise arrives late. Here is one shape I think could work:',
+  ),
+  {
+    kind: 'list',
+    items: [
+      {
+        parts: r(
+          "An owner decides inside their domain, and others advise. The group's check on an owner is to walk away — to adopt someone else's version or fork their own — never to overrule.",
+        ),
+      },
+      {
+        parts: r(
+          "Where the group as a whole sets direction, a change passes by consent unless someone objects, and an objection blocks only if it's checkable: a failing test, a broken requirement, a named risk or a counter-example. A concern gets recorded; it doesn't block.",
+        ),
+      },
+      {
+        parts: r(
+          'A short list of decisions always goes to a person — anything that breaks what others depend on, commits someone’s time, touches production or users, or sets direction for everyone. When nobody answers, the default is no change, never automatic approval.',
+        ),
+      },
+    ],
+  },
+
+  h2('What production adds'),
+  p(
+    "This argument doesn't come from a whiteboard. In an assistant serving sports clubs, we built one narrow piece of it. The model never chooses whose data it reads: a user's identity is removed from everything the model sees, and the server attaches it when a tool is called, so the model can't ask for anyone else's.",
+  ),
+  p(
+    "That's authority enforced by construction — a boundary the system checks, rather than an instruction the model is asked to follow. It shows authority can be made structural. It doesn't show that judgement can be: whose opinion should count on a schema change is a call, not a check. I'd rather say that plainly than pretend otherwise. It's the difference between an argument and a pitch.",
+  ),
+
+  h2('What a test showed'),
+  p(
+    'Ideas about governance are cheap to state, so we tested one. The worry was a loud participant: one agent, told by its person to push hard for a wrong outcome, steering a group decision. We ran {es_p3_runs} simulated decisions across three formats — open debate followed by a vote, a structured process with checkable objections, and the same process without the checkability rule.',
+  ),
+  p(
+    "I expected the structured process to win clearly. It didn't. Every format reached the right outcome in {es_p3_correct} runs, and the structured process took {es_p3_rounds} more rounds to get there.",
+  ),
+  p(
+    'What surprised me most was the loud agent itself. It mostly refused to play the part. It declined its instruction in {es_p3_declined} runs, and usually said so openly — “I came into this round under instruction to argue the proposal through” — before arguing the merits instead. So the result says more about capable models declining to argue a wrong case than about any format holding one off.',
+  ),
+  p(
+    "Two lessons came out of it. On clear decisions, structure costs time and buys nothing, so process should be proportional: light when nothing is contested, full when something is. And the real risks sit where the test didn't reach — decisions where the evidence genuinely doesn't settle the answer, weaker models, several loud voices at once, and loud people. That's the next experiment.",
+  ),
+
+  h2('Where this leaves us'),
+  p(
+    "Six dimensions of governance, absent or partial across five protocols. No governance extension proposed in six months. A window the study's authors think is closing. This essay doesn't claim to have built the missing layer. It claims a dimension is missing from the map — authority that's scoped to a domain and arrives before the work — says what it would have to express, and is honest about what's still unresolved. That last part matters to me most. A design for deciding things well should be able to say what it doesn't know yet.",
+  ),
+
+  h2('Sources'),
+  { kind: 'refs', items: references },
+];
+
+assertReferencesCover(ledger.sources(), references);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: meta.title,
+  description: meta.dek,
+  datePublished: meta.published,
+  author: { '@type': 'Person', name: profile.person.name, url: SITE_URL },
+  url: `${SITE_URL}${path(`/technical/writing/${meta.slug}/`)}`,
+};
+---
+
+<Base
+  title={meta.title}
+  description={meta.dek}
+  path={`/technical/writing/${meta.slug}/`}
+  register="technical"
+  counterpart="/writing/"
+  jsonLd={jsonLd}
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Essay · {longDate(meta.published)}</p>
+        <h1>{meta.title}</h1>
+        <p class="lede lede--long"><Rich parts={r(meta.dek)} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Essay">
+      <EssayBody blocks={blocks} />
+    </section>
+  </article>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={[]}
+    reading="Every figure here comes from the work cited beside it, listed under Sources; the notes below give the limits that travel with two of them."
+  />
+</Base>

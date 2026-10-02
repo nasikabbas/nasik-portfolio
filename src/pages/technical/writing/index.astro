@@ -1,0 +1,48 @@
+---
+/**
+ * Writing, technical register: the essays, newest first. Titles, summaries and dates come from
+ * `src/lib/essays.ts`, so this list cannot disagree with the essays themselves.
+ */
+import { path } from '../../../config/site';
+import Base from '../../../layouts/Base.astro';
+import { ESSAYS, longDate } from '../../../lib/essays';
+
+const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published));
+---
+
+<Base
+  title="Writing — essays on putting AI agents to work"
+  description="Essays on what holds up when AI agents do real work: how knowledge travels between people, and who gets to decide."
+  path="/technical/writing/"
+  register="technical"
+  counterpart="/writing/"
+>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Essays</p>
+      <h1>Writing</h1>
+      <p class="lede">
+        Notes from putting AI agents to work, written up when they hold. Each one says where its numbers
+        come from and what it doesn't know yet.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="essays-heading">
+    <div class="wrap">
+      <h2 id="essays-heading">All essays</h2>
+      <div class="essay-list">
+        {
+          essays.map((e) => (
+            <a class="feature" href={path(`/technical/writing/${e.slug}/`)}>
+              <p class="eyebrow">Essay · {longDate(e.published)}</p>
+              <h3>{e.title}</h3>
+              <p>{e.dek}</p>
+              <span class="feature__cta">Read the essay →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>

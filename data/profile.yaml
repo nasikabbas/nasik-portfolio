@@ -56,6 +56,15 @@ sources:
   padelgpt_report:
     title: PadelGPT and the Support Tool, summer 2026 — PadelOS
     url: https://www.padelos.com/reports/padelgpt-summer-2026
+  wikiskill:
+    title: WikiSkill — Compiling Agent Experience into Persistent Knowledge for Skill Evolution (Tang et al., 2026)
+    url: https://arxiv.org/abs/2608.27454
+  governance_gaps:
+    title: Governance Gaps in Agent Interoperability Protocols (Kang & Diponegoro, 2026)
+    url: https://arxiv.org/abs/2606.31498
+  nasa_error_cost:
+    title: Error Cost Escalation Through the Project Life Cycle (Stecklein et al., NASA, 2004)
+    url: https://ntrs.nasa.gov/citations/20100036670
 
 figures:
   # ── Career ──────────────────────────────────────────────────────────────────────────────
@@ -442,6 +451,203 @@ figures:
       state: verified
       value: two engineers
       basis: His account — the team building design tools.
+
+  # ── Essays — figures from the papers they cite, each read at source on 2026-10-02 ─────────
+  # WikiSkill (Tang et al., 2026). Model sizes: Qwen-3.5-4B, Qwen-3.5-9B, Qwen-3.6-27B.
+  es_ws_gain_small:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 12.3 points
+      basis: Average gain over five benchmarks for Qwen-3.5-4B with WikiSkill, against no skills. §4 and Table 1.
+  es_ws_gain_mid:
+    source: wikiskill
+    figure:
+      state: verified
+      value: '17.5'
+      basis: The same average gain for Qwen-3.5-9B. §4 and Table 1.
+  es_ws_gain_large:
+    source: wikiskill
+    figure:
+      state: verified
+      value: '23.9'
+      basis: The same average gain for Qwen-3.6-27B. §4 and Table 1.
+  es_ws_with_skills:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 47.4%
+      basis: Qwen-3.5-9B with WikiSkill, average across five benchmarks. §1 and Table 1.
+  es_ws_without_skills:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 39.4%
+      basis: Qwen-3.6-27B with no skills, average across the same benchmarks. §1 and Table 1.
+  es_ws_default:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 63.7%
+      basis: >-
+        Gemini-3.5-Flash average in the default configuration, where the Skill Proposer reads the
+        wiki and the Inference Agent does not. §5.1 and Table 3.
+  es_ws_no_wiki:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 48.7%
+      basis: The same average with the persistent wiki removed. Table 3.
+  es_ws_wiki_worth:
+    source: wikiskill
+    figure:
+      state: verified
+      value: fifteen points
+      basis: 63.7% against 48.7% in Table 3 — the difference the persistent wiki makes.
+  es_ws_borrowed:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 70.2%
+      basis: Qwen-3.5-9B on ALFWorld with skills evolved by Qwen-3.6-27B. §1 and Table 2.
+  es_ws_own:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 63.4%
+      basis: Qwen-3.5-9B on ALFWorld with its own evolved skills. §1 and Table 2.
+  es_ws_neg_base:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 50.5%
+      basis: Gemini-3.5-Flash on SpreadSheet with no skills. §4.2.2.
+  es_ws_neg_small:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 18.1%
+      basis: Gemini-3.5-Flash on SpreadSheet with skills evolved by Qwen-3.5-4B. §4.2.2.
+      caveat: >-
+        Measured between two models, not two people. How far two colleagues' knowledge differs has
+        not been measured.
+  es_ws_neg_large:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 63.4%
+      basis: Gemini-3.5-Flash on SpreadSheet with skills evolved by Qwen-3.6-27B. §4.2.2.
+  es_ws_own_before:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 30.2%
+      basis: Qwen-3.5-4B on OfficeQA with no skills. §4.2.2.
+  es_ws_own_after:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 28.5%
+      basis: Qwen-3.5-4B on OfficeQA with its own evolved skills. §4.2.2.
+  es_ws_other_before:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 42.1%
+      basis: Qwen-3.6-27B on OfficeQA with no skills. §4.2.2.
+  es_ws_other_after:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 52.9%
+      basis: Qwen-3.6-27B on OfficeQA with skills evolved by Qwen-3.5-4B. §4.2.2.
+  es_ws_reader_access:
+    source: wikiskill
+    figure:
+      state: verified
+      value: 60.9%
+      basis: >-
+        Gemini-3.5-Flash average when the Inference Agent can also read the wiki during training
+        rollouts. §5.1 and Table 3.
+  # NASA error-cost escalation (Stecklein et al., 2004), in units of the cost at requirements.
+  es_nasa_req:
+    source: nasa_error_cost
+    figure:
+      state: verified
+      value: '1'
+      basis: The cost of fixing a requirements error found during the requirements phase, defined as 1 unit. Abstract.
+  es_nasa_design:
+    source: nasa_error_cost
+    figure:
+      state: verified
+      value: 3–8
+      basis: Units, if the error is found during design. Abstract.
+  es_nasa_build:
+    source: nasa_error_cost
+    figure:
+      state: verified
+      value: 7–16
+      basis: Units, if found during manufacturing or build. Abstract.
+  es_nasa_test:
+    source: nasa_error_cost
+    figure:
+      state: verified
+      value: 21–78
+      basis: Units, if found during integration and test. Abstract.
+  es_nasa_ops:
+    source: nasa_error_cost
+    figure:
+      state: verified
+      value: from 29 to more than 1,500
+      basis: Units, if found in operations. Abstract.
+      caveat: >-
+        From spacecraft-class hardware and software projects. The factor for software built with AI
+        agents has not been measured; only the direction carries over.
+  # Governance gaps (Kang & Diponegoro, 2026), Table III: each dimension 2 = supported, 1 = partial, out of 12.
+  es_gov_mcp_a2a:
+    source: governance_gaps
+    figure:
+      state: verified
+      value: '1'
+      basis: Coverage out of 12 for MCP v1.1 and for A2A v1.0.1. Table III.
+  es_gov_acp_erc:
+    source: governance_gaps
+    figure:
+      state: verified
+      value: '2'
+      basis: Coverage out of 12 for ACP and for ERC-8004. Table III.
+  es_gov_anp:
+    source: governance_gaps
+    figure:
+      state: verified
+      value: '0'
+      basis: Coverage out of 12 for ANP. Table III.
+  # His own pre-registered experiment (no public source).
+  es_p3_runs:
+    figure:
+      state: verified
+      value: '54'
+      basis: >-
+        His loud-participant experiment, 29 Sep 2026: six decisions, three formats, three repetitions,
+        pre-registered; results in the research repository.
+  es_p3_correct:
+    figure:
+      state: verified
+      value: 18 out of 18
+      basis: Every format reached the seeded correct outcome in each of its 18 runs.
+      caveat: >-
+        The planted agent declined its instruction in most runs, so this says more about capable
+        models refusing to argue a wrong case than about any format holding one off.
+  es_p3_rounds:
+    figure:
+      state: verified
+      value: about 40%
+      basis: Mean rounds, 1.50 for the structured process against 1.06 for open debate.
+  es_p3_declined:
+    figure:
+      state: verified
+      value: 42 of 54
+      basis: Runs in which the planted agent declined its instruction in round 1 (it hedged in 10 and complied in 2).
 
 roles:
   - id: padelos
