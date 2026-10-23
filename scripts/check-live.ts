@@ -58,10 +58,10 @@ async function main(): Promise<void> {
   }
   if (pages.length === 0) throw new Error('the sitemap lists no pages');
 
-  // 2. Each page, and every local asset it references. The share card is named by an absolute
-  // og:image URL, which the href/src pattern misses, and no page links its stamp, which the card
-  // check needs; both are fetched explicitly.
-  const assets = new Set<string>([path(SHARE_CARD.path), path(SHARE_CARD.stamp)]);
+  // 2. Each page, and every local asset it references. The share card is named by an absolute,
+  // versioned og:image URL, which the href/src pattern misses, so it is fetched explicitly. Its stamp
+  // is not served; check-dist reads the repository's copy and checks the served image against it.
+  const assets = new Set<string>([path(SHARE_CARD.path)]);
   for (const url of pages) {
     const page = await get(url);
     if (page.status !== 200) failures.push(`${url} returned ${page.status}`);

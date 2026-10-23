@@ -1,4 +1,5 @@
-import { absoluteUrl } from '../config/site';
+import { absoluteUrl, SITE_URL } from '../config/site';
+import type { CardStamp, CardText } from '../schema/card';
 import type { Profile } from '../schema/profile';
 
 /**
@@ -6,12 +7,15 @@ import type { Profile } from '../schema/profile';
  * to the site shows.
  *
  * Built once, here, so those surfaces cannot drift apart when the role, the employer or the current
- * focus changes. The share card is a committed image, and `check-dist` compares the text its stamp
- * records against {@link cardText}, so a title change that forgets to re-render the card fails the
- * build instead of shipping a picture with the old title.
+ * focus changes. The share card is a committed image, and `check-dist` compares the words its stamp
+ * records with {@link cardText}, so a title change that forgets to re-render the card fails the build
+ * instead of shipping a picture with the old title.
  */
 
 type Person = Profile['person'];
+
+/** A no-break space, named because the character itself is invisible in source. */
+const NBSP = String.fromCharCode(0xa0);
 
 /** "Applied AI Lead at PadelOS": the role and where it is held. */
 function held(person: Person): string {
@@ -30,7 +34,7 @@ export function roleLine(person: Person): string {
  * the line from overflowing a narrow screen.
  */
 export function eyebrow(person: Person): string {
-  return [held(person), person.focus.replaceAll(' ', ' '), person.location].join(' · ');
+  return [held(person), person.focus.replaceAll(' ', NBSP), person.location].join(`${NBSP}· `);
 }
 
 /**
@@ -38,39 +42,32 @@ export function eyebrow(person: Person): string {
  * because every page is about the same person. 1200×630 is the size Open Graph consumers ask for.
  */
 export const SHARE_CARD = {
-  /** Site-root path of the image. */
+  /** Site-root path of the image. Its stamp, which is not served, is `data/og-card.json`. */
   path: '/og/card.png',
-  /** Site-root path of its stamp: the text the image shows and the image's hash. */
-  stamp: '/og/card.json',
   width: 1200,
   height: 630,
 } as const;
 
-/** The words drawn on the card. */
-export interface CardText {
-  name: string;
-  title: string;
-  line: string;
-}
-
-/** What `scripts/og-card.ts` records beside the image, and `check-dist` checks. */
-export interface CardStamp {
-  text: CardText;
-  /** SHA-256 of the PNG, hex: proves the image is the one rendered from `text`. */
-  sha256: string;
-}
-
-/** The card's words, from the profile: the same role line the pages show, and the plain headline. */
+/**
+ * The card's words: the same role line the pages show, the plain headline, and the site's own host
+ * (from `SITE_URL`, so a move of the site re-renders the card rather than leaving the old domain).
+ */
 export function cardText(person: Person): CardText {
-  return { name: person.name, title: roleLine(person), line: person.headline.plain };
+  return { name: person.name, title: roleLine(person), line: person.headline.plain, site: new URL(SITE_URL).host };
 }
 
-/** Alt text for the card, for readers who cannot see the image. */
+/**
+ * Alt text: every line the card shows, for readers who cannot see it. Commas stand in for the card's
+ * dot, which some screen readers read aloud.
+ */
 export function cardAlt(person: Person): string {
-  return `${person.name}, ${roleLine(person)}`;
+  return `${person.name}, ${held(person)}, ${person.focus}. ${person.headline.plain}`;
 }
 
-/** The card's absolute URL, as Open Graph requires. */
-export function cardUrl(): string {
-  return absoluteUrl(SHARE_CARD.path);
+/**
+ * The card's absolute URL, versioned by its seal. Link previews cache an image by its URL, so a
+ * changed card needs a changed URL, or previews keep showing the old title.
+ */
+export function cardUrl(stamp: CardStamp): string {
+  return `${absoluteUrl(SHARE_CARD.path)}?v=${stamp.seal.slice(0, 12)}`;
 }

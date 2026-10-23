@@ -30,7 +30,7 @@ and on a site whose argument is honest measurement that is the one thing that ca
 ### Added
 - **A share card.** A link to any page now shows an image with the name, the title line and the
   headline, instead of text alone. It is drawn from the same data as the pages, and the build fails if
-  the two ever disagree.
+  it falls out of step with them.
 
 ## [5.2.0] — 2026-10-23
 

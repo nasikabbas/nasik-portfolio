@@ -110,10 +110,17 @@ change with `npm run shots`**, never with Chrome's `--window-size`: that renders
 crops, producing clipped "phone" screenshots that look exactly like a layout bug.
 
 **The share card is a committed image, so `check-dist` guards it.** `public/og/card.png` is rendered
-locally (it needs Chrome; the deploy runner has none), and its stamp records the text it shows and its
-hash. `check-dist` fails the build when the stamp disagrees with the profile or the image with the
-stamp, so a title change cannot ship with an old card. The fix is always `npm run og-card`, then commit
-both files.
+by `npm run og-card` and committed, so the image that ships is the one that was looked at; a CI runner
+would draw it with its own fonts, unseen. Its stamp, `data/og-card.json` (generated, never edited by
+hand), records the words drawn and a seal over those words and the image. `check-dist` fails the
+build in any of these cases:
+- the words disagree with the profile;
+- the image is not a 1200×630 PNG;
+- the seal does not match;
+- a page's `og:image` is not the seal-versioned URL.
+
+A title change therefore cannot ship with an old card, and link previews refetch a changed one. The
+fix is always `npm run og-card`, then commit both files.
 
 `npm run check` prints **every** non-verified field and every caveated figure on each run, pass or fail.
 That list is the work queue: a reported gap stays a task, a silent one ages into apparent fact.

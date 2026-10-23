@@ -50,9 +50,11 @@ can scan down the left edge. No client JavaScript, no web fonts, no analytics.
 
 ```
 data/profile.yaml          single source of truth: person, sources, figures, roles, credentials
+data/og-card.json          the share card's stamp: the words drawn and their seal; generated, never hand-edited
 src/config/site.ts         SITE_URL + BASE_PATH + path() + absoluteUrl() — the ONLY place either is written
 src/schema/claim.ts        claim() / strictClaim() / resolve() / isPresent() / hasCaveat()
 src/schema/profile.ts      the Zod schema; rejects a {token} that names no figure, at parse time
+src/schema/card.ts         the share card stamp's schema
 src/lib/figures.ts         the figure ledger: renders {tokens}, collects each page's caveats and sources
 src/lib/view.ts            view models for the timeline and proof cards, resolved per register
 src/lib/profile.ts         loads and parses profile.yaml once, for every page
@@ -62,11 +64,12 @@ src/components/            Rich (prose with figures), ProofCards, Timeline, Note
 src/pages/                 /  /work/padelgpt/  /technical/  /technical/evaluation/
 public/styles/global.css   the design system — tokens for light and dark
 public/CNAME               binds the apex domain; must agree with SITE_URL
-public/og/                 the share card (card.png) and its stamp (card.json), both from scripts/og-card.ts
+public/og/card.png         the share card, rendered by scripts/og-card.ts and committed
 scripts/check-profile.ts   the provenance gate over the data
 scripts/check-dist.ts      the gate over the BUILT pages: privacy, caveats, plain language, links, share card
-scripts/og-card.ts         renders the share card from the profile; re-run after changing name, role,
-                           employer, focus or the plain headline (check-dist fails until you do)
+scripts/og-card.ts         renders the share card and its stamp; re-run after changing name, role, employer,
+                           focus, the plain headline or SITE_URL (check-dist fails until you do)
+scripts/share-card.ts      the card's seal and PNG-size checks, shared by og-card.ts and check-dist.ts
 scripts/shots.ts           true phone and desktop screenshots, light and dark, for review
 scripts/chrome.ts          finds Chrome or Edge for the two tools above; neither runs in CI
 .github/workflows/ci.yml   check + build on every push and PR

@@ -17,23 +17,24 @@
  *  3. **Plain pages stay plain.** Outside `/technical/`, technical vocabulary is rejected and a
  *     reading-ease floor is enforced.
  *  4. **Structure.** One `h1`, a title, a description, a canonical URL, a language and the share
- *     card's `og:image` per page; every internal link and fragment resolves.
- *  5. **Share card.** The committed card image still shows what the profile says, and is the image
- *     its stamp describes (see {@link checkShareCard}).
+ *     card's versioned `og:image` per page; every internal link and fragment resolves.
+ *  5. **Share card.** Its stamp's words match the profile, and the image is a 1200×630 PNG sealed
+ *     with those words (see {@link checkShareCard}).
  *
  * Long sentences on plain pages are reported as warnings: they are the first thing to shorten.
  */
 
-import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 import { parse } from 'yaml';
 
-import { cardText, cardUrl, SHARE_CARD, type CardStamp } from '../src/lib/identity';
+import { cardText, cardUrl, SHARE_CARD } from '../src/lib/identity';
+import { CardStampSchema, type CardStamp } from '../src/schema/card';
 import { ProfileSchema, type Profile } from '../src/schema/profile';
 
 import { findTerms, hashTerm, loadPlaintext, words, type TermsFile } from './private-terms';
+import { pngSize, sealOf } from './share-card';
 
 /**
  * The folder to check. `dist/` by default; `DIST_DIR` points it at any other copy of the site —
@@ -191,36 +192,68 @@ function readingEase(blocks: string[]): { score: number; long: string[] } {
   return { score, long };
 }
 
+/** The share card's stamp: in the repository, beside the profile, and never served. */
+const STAMP_FILE = join(process.cwd(), 'data', 'og-card.json');
+
+/** What every share-card failure tells the reader to do. */
+const CARD_FIX = 'run `npm run og-card` and commit both files';
+
+/** The byte-order mark, named because the character itself is invisible in source. */
+const BOM = String.fromCharCode(0xfeff);
+
 /**
- * The share card is a committed image, rendered locally by `npm run og-card` (it needs Chrome), so
- * nothing in the build redraws it when the title changes. This compares the text its stamp records
- * with what the profile says now, and the image with the stamp's hash. A stale or swapped card fails
- * here, in `build`, which the deploy workflow runs. Under `check-live` the same comparison runs on
- * the card the live site serves.
+ * The stamp, validated, or `undefined` after recording why not. A missing, malformed or partial
+ * stamp becomes a named failure, not a stack trace that would hide every other failure in the run.
  */
-function checkShareCard(profile: Profile): void {
-  const png = join(DIST, SHARE_CARD.path);
-  const stampFile = join(DIST, SHARE_CARD.stamp);
-  const fix = 'run `npm run og-card` and commit both files';
-  if (!existsSync(png) || !existsSync(stampFile)) {
-    failures.push({ check: 'share-card', page: SHARE_CARD.path, detail: `the image or its stamp is missing: ${fix}.` });
-    return;
+function readStamp(): CardStamp | undefined {
+  const fail = (detail: string): undefined => {
+    failures.push({ check: 'share-card', page: 'data/og-card.json', detail: `${detail}: ${CARD_FIX}.` });
+    return undefined;
+  };
+  if (!existsSync(STAMP_FILE)) return fail('the stamp is missing');
+  let raw: unknown;
+  try {
+    // A byte-order mark is legal at the start of a file and fatal to JSON.parse; drop it first.
+    const text = readFileSync(STAMP_FILE, 'utf8');
+    raw = JSON.parse(text.startsWith(BOM) ? text.slice(1) : text);
+  } catch {
+    return fail('the stamp is not valid JSON');
   }
-  const stamp = JSON.parse(readFileSync(stampFile, 'utf8')) as Partial<CardStamp>;
+  const parsed = CardStampSchema.safeParse(raw);
+  return parsed.success ? parsed.data : fail(`the stamp does not match its schema (${parsed.error.issues[0]?.message ?? 'unknown'})`);
+}
+
+/**
+ * The share card is a committed image, rendered by `npm run og-card` and reviewed before it is
+ * committed, so nothing in the build redraws it when the title changes. This checks what the card
+ * can be checked for here:
+ * - the words its stamp records are what the profile says now;
+ * - the image is a 1200×630 PNG;
+ * - the image is the one sealed with those words (a hand-edited stamp or a swapped image breaks the
+ *   seal).
+ *
+ * It does not read the pixels. A stale or swapped card fails here, in `build`, which the deploy
+ * workflow runs. Under `check-live`, the image checked is the one the live site serves.
+ */
+function checkShareCard(profile: Profile, stamp: CardStamp): void {
+  const pngFile = join(DIST, SHARE_CARD.path);
+  const fail = (detail: string): void => {
+    failures.push({ check: 'share-card', page: SHARE_CARD.path, detail: `${detail}: ${CARD_FIX}.` });
+  };
   const expected = cardText(profile.person);
-  for (const key of ['name', 'title', 'line'] as const) {
-    const shown = stamp.text?.[key];
-    if (shown !== expected[key]) {
-      failures.push({
-        check: 'share-card',
-        page: SHARE_CARD.path,
-        detail: `the card shows ${key} "${shown ?? '(none)'}", but the profile now says "${expected[key]}": ${fix}.`,
-      });
+  for (const key of ['name', 'title', 'line', 'site'] as const) {
+    if (stamp.text[key] !== expected[key]) {
+      fail(`the card shows ${key} "${stamp.text[key]}", but the profile now says "${expected[key]}"`);
     }
   }
-  if (createHash('sha256').update(readFileSync(png)).digest('hex') !== stamp.sha256) {
-    failures.push({ check: 'share-card', page: SHARE_CARD.path, detail: `the image is not the one its stamp describes: ${fix}.` });
+  if (!existsSync(pngFile)) return fail('the image is missing');
+  const png = readFileSync(pngFile);
+  const size = pngSize(png);
+  if (size === undefined) return fail('the image is not a PNG');
+  if (size[0] !== SHARE_CARD.width || size[1] !== SHARE_CARD.height) {
+    fail(`the image is ${size[0]}×${size[1]}, not ${SHARE_CARD.width}×${SHARE_CARD.height}`);
   }
+  if (sealOf(stamp.text, png) !== stamp.seal) fail('the image and the stamp were not sealed together');
 }
 
 function main(): void {
@@ -231,6 +264,7 @@ function main(): void {
   }
 
   const profile = ProfileSchema.parse(parse(readFileSync(join(process.cwd(), 'data/profile.yaml'), 'utf8')));
+  const stamp = readStamp();
   const caveated = Object.entries(profile.figures).flatMap(([id, e]) =>
     e.figure.state === 'verified' && e.figure.caveat !== undefined
       ? [{ id, value: norm(e.figure.value), caveat: norm(e.figure.caveat) }]
@@ -295,9 +329,12 @@ function main(): void {
     if (!/<meta name="description" content="[^"]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no meta description.' });
     if (!/<link rel="canonical" href="https:\/\/[^"]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no absolute canonical URL.' });
     if (!/<html lang="[a-z-]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no lang attribute.' });
+    // The share card, at the URL its current seal versions. Without a valid stamp there is no
+    // expected URL; that failure is already recorded, so only the tag's presence is checked here.
     const ogImage = /<meta property="og:image" content="([^"]+)"/i.exec(html)?.[1];
-    if (ogImage !== cardUrl()) {
-      failures.push({ check: 'structure', page, detail: `og:image is ${ogImage ?? 'missing'}; expected ${cardUrl()}.` });
+    const expectedImage = stamp === undefined ? undefined : cardUrl(stamp);
+    if (ogImage === undefined || (expectedImage !== undefined && ogImage !== expectedImage)) {
+      failures.push({ check: 'structure', page, detail: `og:image is ${ogImage ?? 'missing'}; expected ${expectedImage ?? 'one'}.` });
     }
 
     for (const [, href] of html.matchAll(/href="([^"]+)"/g)) {
@@ -318,7 +355,7 @@ function main(): void {
     }
   }
 
-  checkShareCard(profile);
+  if (stamp !== undefined) checkShareCard(profile, stamp);
 
   console.log(`check-dist: ${pages.length} pages, ${textFiles.length} text files checked against ${terms.terms.length} private terms.`);
 

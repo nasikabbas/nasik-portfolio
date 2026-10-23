@@ -7,10 +7,12 @@
  * `counterpart` is the equivalent page in the other register — never just its home, so the
  * switch keeps the reader where they were.
  */
+import cardStamp from '../../data/og-card.json';
 import { absoluteUrl, path } from '../config/site';
 import { cardAlt, cardUrl, SHARE_CARD } from '../lib/identity';
 import { profile } from '../lib/profile';
 import type { Register } from '../lib/view';
+import { CardStampSchema } from '../schema/card';
 
 interface Props {
   /** Page title, without the site name. */
@@ -28,6 +30,8 @@ interface Props {
 
 const { title, description, path: pagePath, register, counterpart, jsonLd } = Astro.props;
 const { person } = profile;
+// The card's stamp versions its URL, so a re-rendered card gets a new URL and link previews refetch it.
+const shareCardUrl = cardUrl(CardStampSchema.parse(cardStamp));
 
 const NAV: Record<Register, Array<{ href: string; label: string }>> = {
   plain: [
@@ -66,7 +70,7 @@ const current = path(pagePath);
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={cardUrl()} />
+    <meta property="og:image" content={shareCardUrl} />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content={String(SHARE_CARD.width)} />
     <meta property="og:image:height" content={String(SHARE_CARD.height)} />
