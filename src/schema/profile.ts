@@ -103,12 +103,17 @@ export const ProfileSchema = z
   .object({
     person: z.object({
       name: z.string().min(1),
-      /** The job title a recruiter will search for. */
+      /** His job title as his employer has it: the page title, and the start of the line above his name. */
       role: z.string().min(1),
+      /** Where the role is held, as the line above his name and the structured data name it. */
+      employer: z.string().min(1),
+      /**
+       * What else he is building, in a few words, after the employer in the line above his name.
+       * Never an availability statement (see `contact`).
+       */
+      focus: z.string().min(1),
       /** Country only — his instruction: the site never names his current city. */
       location: z.string().min(1),
-      /** Whether he will move for a role; stated because it decides international applications. */
-      relocation: z.string().min(1),
       email: z.email(),
       pronouns: z.string().min(1),
       links: z.object({ linkedin: z.url(), github: z.url() }),

@@ -16,8 +16,9 @@
 person:
   name: Nasik Abbas
   role: Applied AI Lead
+  employer: PadelOS
+  focus: building h9k
   location: Pakistan
-  relocation: Open to relocation
   email: syed.nasik.abbas@gmail.com
   pronouns: he/him
   links:
@@ -49,8 +50,8 @@ person:
         Arabia, three startups, and three years of consulting in process engineering, ERP and
         financial modelling.
   contact: >-
-    Currently leading applied AI at PadelOS, and always glad to talk about roles where AI has to
-    work in a real business.
+    Leading applied AI at PadelOS and building h9k. Always glad to talk about AI that has to work in
+    a real business.
 
 sources:
   padelgpt_report:

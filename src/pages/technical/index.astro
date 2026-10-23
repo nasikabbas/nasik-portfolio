@@ -12,6 +12,7 @@ import Timeline from '../../components/Timeline.astro';
 import { path } from '../../config/site';
 import Base from '../../layouts/Base.astro';
 import { FigureLedger } from '../../lib/figures';
+import { eyebrow } from '../../lib/identity';
 import { profile } from '../../lib/profile';
 import { resolveProof, resolveRoles, type ProofItem } from '../../lib/view';
 
@@ -104,7 +105,7 @@ const description = `${person.name}, ${person.role}. ${person.headline.technical
 <Base title={`${person.role} — technical`} description={description} path="/technical/" register="technical" counterpart="/">
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">{person.role} at PadelOS · {person.location} · {person.relocation}</p>
+      <p class="eyebrow">{eyebrow(person)}</p>
       <h1>{person.name}</h1>
       <p class="lede">{person.headline.technical}</p>
       <div class="summary">
@@ -240,7 +241,7 @@ const description = `${person.name}, ${person.role}. ${person.headline.technical
       <h2 id="contact-heading">Contact</h2>
       <div class="contact-card">
         <p>{person.contact}</p>
-        <p class="muted">Based in {person.location}. {person.relocation}.</p>
+        <p class="muted">Based in {person.location}.</p>
         <div class="actions">
           <a class="button button--primary" href={`mailto:${person.email}`}>{person.email}</a>
           <a class="button" href={person.links.github}>GitHub</a>

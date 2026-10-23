@@ -17,6 +17,7 @@ import Timeline from '../components/Timeline.astro';
 import { SITE_URL, path } from '../config/site';
 import Base from '../layouts/Base.astro';
 import { FigureLedger } from '../lib/figures';
+import { eyebrow } from '../lib/identity';
 import { profile } from '../lib/profile';
 import { resolveProof, resolveRoles, type ProofItem } from '../lib/view';
 
@@ -93,7 +94,7 @@ const jsonLd = {
   url: SITE_URL,
   email: `mailto:${person.email}`,
   address: { '@type': 'PostalAddress', addressCountry: 'PK' },
-  worksFor: { '@type': 'Organization', name: 'PadelOS' },
+  worksFor: { '@type': 'Organization', name: person.employer },
   alumniOf: education.map((e) => ({ '@type': 'CollegeOrUniversity', name: e.institution })),
   sameAs: [person.links.linkedin, person.links.github],
   knowsAbout: ['Applied AI', 'LLM evaluation', 'AI agents', 'Product management', 'Lean process improvement'],
@@ -103,7 +104,7 @@ const jsonLd = {
 <Base title={person.role} description={description} path="/" register="plain" counterpart="/technical/" jsonLd={jsonLd}>
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">{person.role} at PadelOS · {person.location} · {person.relocation}</p>
+      <p class="eyebrow">{eyebrow(person)}</p>
       <h1>{person.name}</h1>
       <p class="lede">{person.headline.plain}</p>
       <div class="summary">
@@ -217,7 +218,7 @@ const jsonLd = {
       <h2 id="contact-heading">Contact</h2>
       <div class="contact-card">
         <p>{person.contact}</p>
-        <p class="muted">Based in {person.location}. {person.relocation}.</p>
+        <p class="muted">Based in {person.location}.</p>
         <div class="actions">
           <a class="button button--primary" href={`mailto:${person.email}`}>{person.email}</a>
           <a class="button" href={person.links.linkedin}>LinkedIn</a>
