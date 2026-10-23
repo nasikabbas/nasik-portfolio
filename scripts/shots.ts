@@ -10,6 +10,8 @@
  *
  * Usage: `npm run preview` (or any server on the site), then
  *   npx tsx scripts/shots.ts [baseUrl] [outDir]
+ * `astro preview` runs in the background and moves to the next free port when 4321 is taken, so
+ * pass the URL it prints. Every page must answer 200 before anything is shot.
  * Writes `<outDir>/<page>-<device>-<scheme>.png`. A development tool: not part of the build.
  */
 
@@ -84,7 +86,32 @@ class Cdp {
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Fails unless every page answers 200. When 4321 is busy, `astro preview` serves on the next free
+ * port, so the default URL can belong to a different server. Its 404 pages would be shot and read
+ * exactly like a broken layout (2026-10-23).
+ */
+async function assertServed(): Promise<void> {
+  const failures: string[] = [];
+  for (const page of PAGES) {
+    const url = `${BASE}${page.path}`;
+    try {
+      const res = await fetch(url);
+      if (res.status !== 200) failures.push(`${url} answered ${res.status}`);
+    } catch {
+      failures.push(`${url} did not answer`);
+    }
+  }
+  if (failures.length > 0) {
+    throw new Error(
+      `This is not the site, or it is not running:\n  ${failures.join('\n  ')}\n` +
+        'Pass the URL `astro preview` printed: it moves to the next free port when 4321 is taken.',
+    );
+  }
+}
+
 async function main(): Promise<void> {
+  await assertServed();
   const { existsSync } = await import('node:fs');
   const chrome = CHROME_CANDIDATES.find((p) => existsSync(p));
   if (chrome === undefined) throw new Error('No Chrome or Edge found; add its path to CHROME_CANDIDATES.');
