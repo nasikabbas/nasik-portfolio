@@ -29,11 +29,18 @@ import { FIGURE_TOKEN, ProfileSchema, type Line } from '../src/schema/profile';
 const PROFILE_PATH = resolvePath(process.cwd(), 'data/profile.yaml');
 
 /**
- * Digits that are names, not quantities: methods and models whose names contain numbers.
- * Anything else with a digit outside a token is reported. Kept explicit so an addition is a
- * visible decision rather than a loosened pattern.
+ * Digits that are names, not quantities: methods, models and products whose names contain
+ * numbers. Anything else with a digit outside a token is reported. Kept explicit so an addition
+ * is a visible decision rather than a loosened pattern.
  */
-const NAMES_WITH_DIGITS = [/\b5S\b/g, /\bo3\b/g, /\bo4-mini\b/g, /\bIsaac-1\b/g, /\b(19|20)\d{2}\b/g];
+const NAMES_WITH_DIGITS = [
+  /\b5S\b/g,
+  /\bo3\b/g,
+  /\bo4-mini\b/g,
+  /\bIsaac-1\b/g,
+  /\bh9k\b/g,
+  /\b(19|20)\d{2}\b/g,
+];
 
 /** ANSI helpers. Degrade to plain text when stdout is not a TTY (CI logs, pipes). */
 const useColour = process.stdout.isTTY === true;
