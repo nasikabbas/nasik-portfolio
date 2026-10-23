@@ -71,7 +71,8 @@ ships without the number it belongs to. When `caveat` is set the renderer
   then render its `notes()` and `sources()` — so a page's limits and sources are complete regardless of
   the order Astro renders children in. Do not resolve figures inside a child component.
 - `src/lib/view.ts` — view models (timeline, proof cards) per register. `src/lib/profile.ts` — the one
-  place `profile.yaml` is loaded.
+  place `profile.yaml` is loaded. `src/lib/identity.ts` — the one place the line describing him (role,
+  employer, focus) is composed, for the pages and the share card alike.
 - `src/pages/` — routes. `src/layouts/`, `src/components/` — markup. `public/styles/` — the design system.
 - `scripts/` — build-time gates and tools. A check that matters belongs here, wired into `npm run
   check` or `npm run build`, not in a comment asking someone to remember. `check-dist.ts` gates the
@@ -98,6 +99,7 @@ npm run build     # static build to dist/, then check-dist over the built pages
 npm run dev       # local dev server
 npm run preview   # serve dist/ — a daemon in Astro 7; `npx astro preview stop` ends it
 npm run shots     # phone + desktop, light + dark screenshots of the served site
+npm run og-card   # re-render the share card after changing name, role, employer, focus or plain headline
 npm run check:live  # after a deploy: check-dist's gates over the pages the live domain serves
 npm run format    # prettier
 ```
@@ -106,6 +108,12 @@ npm run format    # prettier
 and deploy start independently — a check only in `check` cannot stop a deploy. **Review a visual
 change with `npm run shots`**, never with Chrome's `--window-size`: that renders at ~504 px minimum and
 crops, producing clipped "phone" screenshots that look exactly like a layout bug.
+
+**The share card is a committed image, so `check-dist` guards it.** `public/og/card.png` is rendered
+locally (it needs Chrome; the deploy runner has none), and its stamp records the text it shows and its
+hash. `check-dist` fails the build when the stamp disagrees with the profile or the image with the
+stamp, so a title change cannot ship with an old card. The fix is always `npm run og-card`, then commit
+both files.
 
 `npm run check` prints **every** non-verified field and every caveated figure on each run, pass or fail.
 That list is the work queue: a reported gap stays a task, a silent one ages into apparent fact.

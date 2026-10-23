@@ -16,18 +16,22 @@
  *     on that page too. This is the check `claim.ts` has always promised and nothing performed.
  *  3. **Plain pages stay plain.** Outside `/technical/`, technical vocabulary is rejected and a
  *     reading-ease floor is enforced.
- *  4. **Structure.** One `h1`, a title, a description, a canonical URL and a language per page;
- *     every internal link and fragment resolves.
+ *  4. **Structure.** One `h1`, a title, a description, a canonical URL, a language and the share
+ *     card's `og:image` per page; every internal link and fragment resolves.
+ *  5. **Share card.** The committed card image still shows what the profile says, and is the image
+ *     its stamp describes (see {@link checkShareCard}).
  *
  * Long sentences on plain pages are reported as warnings: they are the first thing to shorten.
  */
 
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 import { parse } from 'yaml';
 
-import { ProfileSchema } from '../src/schema/profile';
+import { cardText, cardUrl, SHARE_CARD, type CardStamp } from '../src/lib/identity';
+import { ProfileSchema, type Profile } from '../src/schema/profile';
 
 import { findTerms, hashTerm, loadPlaintext, words, type TermsFile } from './private-terms';
 
@@ -187,6 +191,38 @@ function readingEase(blocks: string[]): { score: number; long: string[] } {
   return { score, long };
 }
 
+/**
+ * The share card is a committed image, rendered locally by `npm run og-card` (it needs Chrome), so
+ * nothing in the build redraws it when the title changes. This compares the text its stamp records
+ * with what the profile says now, and the image with the stamp's hash. A stale or swapped card fails
+ * here, in `build`, which the deploy workflow runs. Under `check-live` the same comparison runs on
+ * the card the live site serves.
+ */
+function checkShareCard(profile: Profile): void {
+  const png = join(DIST, SHARE_CARD.path);
+  const stampFile = join(DIST, SHARE_CARD.stamp);
+  const fix = 'run `npm run og-card` and commit both files';
+  if (!existsSync(png) || !existsSync(stampFile)) {
+    failures.push({ check: 'share-card', page: SHARE_CARD.path, detail: `the image or its stamp is missing: ${fix}.` });
+    return;
+  }
+  const stamp = JSON.parse(readFileSync(stampFile, 'utf8')) as Partial<CardStamp>;
+  const expected = cardText(profile.person);
+  for (const key of ['name', 'title', 'line'] as const) {
+    const shown = stamp.text?.[key];
+    if (shown !== expected[key]) {
+      failures.push({
+        check: 'share-card',
+        page: SHARE_CARD.path,
+        detail: `the card shows ${key} "${shown ?? '(none)'}", but the profile now says "${expected[key]}": ${fix}.`,
+      });
+    }
+  }
+  if (createHash('sha256').update(readFileSync(png)).digest('hex') !== stamp.sha256) {
+    failures.push({ check: 'share-card', page: SHARE_CARD.path, detail: `the image is not the one its stamp describes: ${fix}.` });
+  }
+}
+
 function main(): void {
   selfTest();
   if (!existsSync(DIST)) {
@@ -259,6 +295,10 @@ function main(): void {
     if (!/<meta name="description" content="[^"]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no meta description.' });
     if (!/<link rel="canonical" href="https:\/\/[^"]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no absolute canonical URL.' });
     if (!/<html lang="[a-z-]+"/i.test(html)) failures.push({ check: 'structure', page, detail: 'no lang attribute.' });
+    const ogImage = /<meta property="og:image" content="([^"]+)"/i.exec(html)?.[1];
+    if (ogImage !== cardUrl()) {
+      failures.push({ check: 'structure', page, detail: `og:image is ${ogImage ?? 'missing'}; expected ${cardUrl()}.` });
+    }
 
     for (const [, href] of html.matchAll(/href="([^"]+)"/g)) {
       if (href === undefined || !href.startsWith('/') || href.startsWith('//')) continue;
@@ -278,6 +318,8 @@ function main(): void {
     }
   }
 
+  checkShareCard(profile);
+
   console.log(`check-dist: ${pages.length} pages, ${textFiles.length} text files checked against ${terms.terms.length} private terms.`);
 
   if (warnings.length > 0) {
@@ -290,7 +332,7 @@ function main(): void {
     for (const f of failures) console.error(`  x [${f.check}] ${f.page}  ${f.detail}`);
     process.exit(1);
   }
-  console.log('\ncheck-dist: privacy, caveats, plain language, structure and links all pass.');
+  console.log('\ncheck-dist: privacy, caveats, plain language, structure, links and the share card all pass.');
 }
 
 main();

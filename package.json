@@ -14,6 +14,7 @@
     "check": "tsx scripts/check-source.ts && tsx scripts/check-profile.ts && astro check",
     "format": "prettier --write .",
     "shots": "tsx scripts/shots.ts",
+    "og-card": "tsx scripts/og-card.ts",
     "check:live": "tsx scripts/check-live.ts"
   },
   "dependencies": {

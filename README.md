@@ -56,14 +56,19 @@ src/schema/profile.ts      the Zod schema; rejects a {token} that names no figur
 src/lib/figures.ts         the figure ledger: renders {tokens}, collects each page's caveats and sources
 src/lib/view.ts            view models for the timeline and proof cards, resolved per register
 src/lib/profile.ts         loads and parses profile.yaml once, for every page
-src/layouts/Base.astro     head, header with the register switch, footer
+src/lib/identity.ts        the one-line description of him (above his name, on the share card), built once
+src/layouts/Base.astro     head (with the share card's og:image), header with the register switch, footer
 src/components/            Rich (prose with figures), ProofCards, Timeline, Notes
 src/pages/                 /  /work/padelgpt/  /technical/  /technical/evaluation/
 public/styles/global.css   the design system — tokens for light and dark
 public/CNAME               binds the apex domain; must agree with SITE_URL
+public/og/                 the share card (card.png) and its stamp (card.json), both from scripts/og-card.ts
 scripts/check-profile.ts   the provenance gate over the data
-scripts/check-dist.ts      the gate over the BUILT pages: privacy, caveats, plain language, links
+scripts/check-dist.ts      the gate over the BUILT pages: privacy, caveats, plain language, links, share card
+scripts/og-card.ts         renders the share card from the profile; re-run after changing name, role,
+                           employer, focus or the plain headline (check-dist fails until you do)
 scripts/shots.ts           true phone and desktop screenshots, light and dark, for review
+scripts/chrome.ts          finds Chrome or Edge for the two tools above; neither runs in CI
 .github/workflows/ci.yml   check + build on every push and PR
 .github/workflows/deploy.yml  Pages deploy on main (its build runs check-dist)
 ```
