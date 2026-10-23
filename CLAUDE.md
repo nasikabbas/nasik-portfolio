@@ -18,8 +18,8 @@
   recruiter or HR partner who reads first; technical at `/technical/` is for the engineer who reads
   second. Both render from the same entries. Prose never types a number — it embeds `{figure_id}` —
   so the versions cannot disagree about a value.
-- **Private, never in this repo:** `.wh/` (the working area — career plan, finances, working history)
-  and `source-material/` (confidential decks, personal essays, employer material). Both excluded via
+- **Private, never in this repo:** `.wh/` (a personal working area) and `source-material/` (reference
+  material). Both excluded via
   `.git/info/exclude`, **not** `.gitignore` — this repo is public, and a tracked ignore file publishes
   the shape of a private convention to everyone who clones it.
 

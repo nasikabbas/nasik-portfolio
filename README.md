@@ -76,9 +76,9 @@ scripts/chrome.ts          finds Chrome or Edge for the two tools above; neither
 .github/workflows/deploy.yml  Pages deploy on main (its build runs check-dist)
 ```
 
-Private, and deliberately **not** listed in the tracked `.gitignore`: `.wh/` (the private working
-area, which holds the career and financial planning) and `source-material/` (confidential decks and
-reference documents). Both are excluded via `.git/info/exclude`, which is local and never tracked — a
+Two local folders, `.wh/` (a personal working area) and `source-material/` (reference material), are
+never part of this repository, and deliberately **not** listed in the tracked `.gitignore`. Both are
+excluded via `.git/info/exclude`, which is local and never tracked — a
 tracked ignore file in a public repository publishes the shape of a private convention to everyone who
 clones it, which is a small disclosure and an avoidable one.
 

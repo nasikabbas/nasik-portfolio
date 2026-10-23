@@ -107,10 +107,7 @@ export const ProfileSchema = z
       role: z.string().min(1),
       /** Where the role is held, as the line above his name and the structured data name it. */
       employer: z.string().min(1),
-      /**
-       * What else he is building, in a few words, after the employer in the line above his name.
-       * Never an availability statement (see `contact`).
-       */
+      /** What else he is building, in a few words, after the employer in the line above his name. */
       focus: z.string().min(1),
       /** Country only — his instruction: the site never names his current city. */
       location: z.string().min(1),
@@ -121,10 +118,7 @@ export const ProfileSchema = z
       headline: z.object({ plain: z.string().min(1), technical: z.string().min(1) }),
       /** Two or three sentences under the headline, per register. */
       summary: z.object({ plain: z.array(LineSchema).min(1), technical: z.array(LineSchema).min(1) }),
-      /**
-       * The contact line. Deliberately carries no availability date: a stated date signals
-       * urgency and costs leverage (his decision, 2026-09-27). `check-dist` enforces it.
-       */
+      /** The contact line, above the email and profile links. */
       contact: z.string().min(1),
     }),
     sources: z.record(Id, SourceSchema),

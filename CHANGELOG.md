@@ -20,7 +20,8 @@ and on a site whose argument is honest measurement that is the one thing that ca
 **Why MAJOR:** a published statement is withdrawn.
 
 ### Removed
-- **The relocation statement**, from the line above the name and from the contact section.
+- **The relocation statement**, from the line above the name and from the contact section. The 1.0.0
+  entry below is reworded to match, as 5.0.0 did for 4.0.0, so the withdrawn line is not restated.
 
 ### Changed
 - **The line above the name** now reads "Applied AI Lead at PadelOS · building h9k · Pakistan".
@@ -168,7 +169,7 @@ what they were.
   1.16.0.
 - The headline is now *"I make AI work inside real businesses, and I measure whether it does"* (was
   *"Production AI engineer — making AI systems work in real operating conditions"*).
-- The location names the country only — Pakistan, open to relocation (was Islamabad, Pakistan).
+- The location names the country only.
 
 ### Added
 - **Two versions of the site.** Plain English is the default, written for a recruiter or HR partner;
