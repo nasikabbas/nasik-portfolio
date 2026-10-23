@@ -15,6 +15,23 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [6.0.0] — 2026-10-23
+
+**Why MAJOR:** a published statement is withdrawn.
+
+### Removed
+- **The relocation statement**, from the line above the name and from the contact section.
+
+### Changed
+- **The line above the name** now reads "Applied AI Lead at PadelOS · building h9k · Pakistan".
+- **The contact line** now reads "Leading applied AI at PadelOS and building h9k. Always glad to talk
+  about AI that has to work in a real business."
+
+### Added
+- **A share card.** A link to any page now shows an image with the name, the title line and the
+  headline, instead of text alone. It is drawn from the same data as the pages, and the build fails if
+  the two ever disagree.
+
 ## [5.2.0] — 2026-10-23
 
 **Why MINOR:** new content; nothing published changes meaning.
