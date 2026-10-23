@@ -659,6 +659,19 @@ roles:
       retrieval and release documentation; the production usage exports; the Pollen
       architecture deck and device-configuration files.
     positions:
+      # The technical line is h9k's own one-line description; the plain line says "assistant"
+      # because the plain register's gate rejects "agent".
+      - title: Building h9k
+        period: Oct 2026 – present
+        about: >-
+          h9k is a new product at Moonlabor, the company PadelOS was spun out of. It is in early
+          development.
+        plain:
+          - >-
+            The idea in one line: ask your colleague's AI assistant instead of interrupting them.
+        technical:
+          - >-
+            The idea in one line: ask your colleague's AI agent instead of interrupting them.
       - title: Applied AI Lead, PadelGPT
         period: Jan 2025 – present
         about: >-

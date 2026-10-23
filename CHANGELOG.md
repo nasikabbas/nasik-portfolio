@@ -15,6 +15,15 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [5.2.0] — 2026-10-23
+
+**Why MINOR:** new content; nothing published changes meaning.
+
+### Added
+- **Building h9k**, a new entry under PadelOS. h9k is a new product at Moonlabor, the company
+  PadelOS was spun out of, and it is in early development. The entry says what it is in one line:
+  ask your colleague's AI assistant instead of interrupting them.
+
 ## [5.1.0] — 2026-10-02
 
 **Why MINOR:** new pages; nothing published changes meaning.
