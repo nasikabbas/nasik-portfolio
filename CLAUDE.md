@@ -19,9 +19,8 @@
   second. Both render from the same entries. Prose never types a number — it embeds `{figure_id}` —
   so the versions cannot disagree about a value.
 - **Private, never in this repo:** `.wh/` (a personal working area) and `source-material/` (reference
-  material). Both excluded via
-  `.git/info/exclude`, **not** `.gitignore` — this repo is public, and a tracked ignore file publishes
-  the shape of a private convention to everyone who clones it.
+  material). Both excluded via `.git/info/exclude`, **not** `.gitignore` — this repo is public, and a
+  tracked ignore file publishes the shape of a private convention to everyone who clones it.
 
 ## Private terms, and why this public repo never lists them
 
@@ -152,10 +151,11 @@ curl -s -o /dev/null -w '%{http_code}\n' https://nasikabbas.com/styles/global.cs
   near expiry), DNS through the domain's own nameservers and four public resolvers, then
   `check:live`. When someone reports the site down, read the error type first and follow the deploy
   skill's triage table: a DNS error with a green Uptime run is the visitor's network, not the site.
-- **`public/CNAME` must agree with `SITE_URL`.** The apex domain is functional, not decorative:
-  `robots.txt` is only ever read at a domain root, so on a Pages sub-path an AI-crawler allowlist is
-  inert — and being retrievable when someone asks an assistant about this person is one reason the site
-  exists.
+- **`public/CNAME` must agree with `SITE_URL`.** The apex domain is functional, not decorative. No
+  `robots.txt` is served, so every crawler, AI assistants included, may read the site — being
+  retrievable when someone asks an assistant about this person is one reason the site exists. A
+  `robots.txt`, if one is ever added, is only read at a domain root, so on a Pages sub-path it would be
+  inert.
 
 ---
 
