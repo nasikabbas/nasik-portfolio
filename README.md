@@ -3,15 +3,18 @@
 Portfolio, case studies and résumé system for **Nasik Abbas**, generated from a single source of
 truth and published at **[nasikabbas.com](https://nasikabbas.com)**.
 
-Status: **1.0.0** — the site in two versions (plain English and technical), the full career, and two
-case studies. Next: a technical platform page, a printable CV, `llms.txt`.
+Live: the site in two versions (plain English and technical), the full career, a case study, an
+evaluation page and two essays. The current version, and what each release changed, is in
+[CHANGELOG.md](CHANGELOG.md). Not built yet: the résumé variants, `llms.txt` and the LinkedIn pack
+described below.
 
 ---
 
 ## Why it is built this way
 
-**One source, many surfaces.** `data/profile.yaml` is the only place a fact is written. The site,
-the résumé variants, `llms.txt` and the LinkedIn pack are all generated from it. A candidate whose
+**One source, many surfaces.** `data/profile.yaml` is the only place a fact is written. The site is
+generated from it, and so are the share card and, once built, the résumé variants, `llms.txt` and the
+LinkedIn pack. A candidate whose
 site, résumé and LinkedIn disagree looks careless; generating them from one file makes disagreement
 impossible rather than merely unlikely.
 
@@ -50,27 +53,36 @@ can scan down the left edge. No client JavaScript, no web fonts, no analytics.
 
 ```
 data/profile.yaml          single source of truth: person, sources, figures, roles, credentials
+data/og-card.json          the share card's stamp: the words drawn and their seal; generated, never hand-edited
 src/config/site.ts         SITE_URL + BASE_PATH + path() + absoluteUrl() — the ONLY place either is written
 src/schema/claim.ts        claim() / strictClaim() / resolve() / isPresent() / hasCaveat()
 src/schema/profile.ts      the Zod schema; rejects a {token} that names no figure, at parse time
+src/schema/card.ts         the share card stamp's schema
 src/lib/figures.ts         the figure ledger: renders {tokens}, collects each page's caveats and sources
 src/lib/view.ts            view models for the timeline and proof cards, resolved per register
 src/lib/profile.ts         loads and parses profile.yaml once, for every page
-src/layouts/Base.astro     head, header with the register switch, footer
+src/lib/identity.ts        the one-line description of him (above his name, on the share card), built once
+src/layouts/Base.astro     head (with the share card's og:image), header with the register switch, footer
 src/components/            Rich (prose with figures), ProofCards, Timeline, Notes
-src/pages/                 /  /work/padelgpt/  /technical/  /technical/evaluation/
+src/pages/                 /  /work/padelgpt/  /writing/  /technical/  /technical/evaluation/
+                           /technical/writing/ and one page per essay under it
 public/styles/global.css   the design system — tokens for light and dark
 public/CNAME               binds the apex domain; must agree with SITE_URL
+public/og/card.png         the share card, rendered by scripts/og-card.ts and committed
 scripts/check-profile.ts   the provenance gate over the data
-scripts/check-dist.ts      the gate over the BUILT pages: privacy, caveats, plain language, links
+scripts/check-dist.ts      the gate over the BUILT pages: privacy, caveats, plain language, links, share card
+scripts/og-card.ts         renders the share card and its stamp; re-run after changing name, role, employer,
+                           focus, the plain headline or SITE_URL (check-dist fails until you do)
+scripts/share-card.ts      the card's seal and PNG-size checks, shared by og-card.ts and check-dist.ts
 scripts/shots.ts           true phone and desktop screenshots, light and dark, for review
+scripts/chrome.ts          finds Chrome or Edge for the two tools above; neither runs in CI
 .github/workflows/ci.yml   check + build on every push and PR
 .github/workflows/deploy.yml  Pages deploy on main (its build runs check-dist)
 ```
 
-Private, and deliberately **not** listed in the tracked `.gitignore`: `.wh/` (the private working
-area, which holds the career and financial planning) and `source-material/` (confidential decks and
-reference documents). Both are excluded via `.git/info/exclude`, which is local and never tracked — a
+Two local folders, `.wh/` (a personal working area) and `source-material/` (reference material), are
+never part of this repository, and deliberately **not** listed in the tracked `.gitignore`. Both are
+excluded via `.git/info/exclude`, which is local and never tracked — a
 tracked ignore file in a public repository publishes the shape of a private convention to everyone who
 clones it, which is a small disclosure and an avoidable one.
 
@@ -82,6 +94,7 @@ npm run build     # static build to dist/, then check-dist over the built pages
 npm run dev       # local dev server
 npm run preview   # serve dist/ (Astro 7 runs it as a daemon: `npx astro preview stop` ends it)
 npm run shots     # screenshots of the served site into ./shots — needs preview running
+npm run og-card   # re-render the share card after changing name, role, employer, focus, headline or SITE_URL
 npm run check:live  # after a deploy: the build's gates, run over what nasikabbas.com serves
 npm run format    # prettier
 ```
@@ -102,9 +115,10 @@ Chrome over the DevTools protocol with real device emulation, and reports any ho
 
 GitHub Pages from `main` via `withastro/action@v5`, custom apex domain.
 
-The apex domain is functional rather than decorative: **`robots.txt` is only ever read at a domain
-root**, so on a `user.github.io/project` sub-path the AI-crawler allowlist is inert — and being
-retrievable when someone asks an assistant about this person is one of the reasons the site exists.
+The apex domain is functional rather than decorative. No `robots.txt` is served, so every crawler,
+AI assistants included, may read the site — being retrievable when someone asks an assistant about
+this person is one of the reasons the site exists. Should one ever be added, **`robots.txt` is only
+read at a domain root**, so on a `user.github.io/project` sub-path it would be inert.
 
 Moving origin or sub-path is a two-constant edit in `src/config/site.ts`; nothing in `src/` may
 hard-code either.

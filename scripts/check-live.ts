@@ -16,23 +16,29 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
-import { SITE_URL } from '../src/config/site';
+import { path, SITE_URL } from '../src/config/site';
+import { SHARE_CARD } from '../src/lib/identity';
 
-async function get(url: string): Promise<{ status: number; body: string; headers: Headers }> {
+/**
+ * A response kept as bytes, with `body` as its text. Bytes, because decoding an image as text
+ * corrupts it, and `check-dist` hashes the served share card against its stamp.
+ */
+async function get(url: string): Promise<{ status: number; bytes: Buffer; body: string; headers: Headers }> {
   const res = await fetch(url, { redirect: 'follow', headers: { 'cache-control': 'no-cache' } });
-  return { status: res.status, body: await res.text(), headers: res.headers };
+  const bytes = Buffer.from(await res.arrayBuffer());
+  return { status: res.status, bytes, body: bytes.toString('utf8'), headers: res.headers };
 }
 
 /** `https://nasikabbas.com/work/padelgpt/` → `<root>/work/padelgpt/index.html`. */
 function localPath(root: string, url: string): string {
-  const path = new URL(url).pathname;
-  return path.endsWith('/') ? join(root, path, 'index.html') : join(root, path);
+  const pathname = new URL(url).pathname;
+  return pathname.endsWith('/') ? join(root, pathname, 'index.html') : join(root, pathname);
 }
 
-function save(root: string, url: string, body: string): void {
+function save(root: string, url: string, bytes: Buffer): void {
   const file = localPath(root, url);
   mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, body);
+  writeFileSync(file, bytes);
 }
 
 async function main(): Promise<void> {
@@ -42,29 +48,31 @@ async function main(): Promise<void> {
   // 1. Every page the sitemap lists, via the sitemap index.
   const index = await get(`${SITE_URL}/sitemap-index.xml`);
   if (index.status !== 200) throw new Error(`sitemap-index.xml returned ${index.status}`);
-  save(root, `${SITE_URL}/sitemap-index.xml`, index.body);
+  save(root, `${SITE_URL}/sitemap-index.xml`, index.bytes);
   const pages: string[] = [];
   for (const [, sitemapUrl] of index.body.matchAll(/<loc>([^<]+)<\/loc>/g)) {
     if (sitemapUrl === undefined) continue;
     const sitemap = await get(sitemapUrl);
-    save(root, sitemapUrl, sitemap.body);
+    save(root, sitemapUrl, sitemap.bytes);
     for (const [, pageUrl] of sitemap.body.matchAll(/<loc>([^<]+)<\/loc>/g)) if (pageUrl !== undefined) pages.push(pageUrl);
   }
   if (pages.length === 0) throw new Error('the sitemap lists no pages');
 
-  // 2. Each page, and every local asset it references.
-  const assets = new Set<string>();
+  // 2. Each page, and every local asset it references. The share card is named by an absolute,
+  // versioned og:image URL, which the href/src pattern misses, so it is fetched explicitly. Its stamp
+  // is not served; check-dist reads the repository's copy and checks the served image against it.
+  const assets = new Set<string>([path(SHARE_CARD.path)]);
   for (const url of pages) {
     const page = await get(url);
     if (page.status !== 200) failures.push(`${url} returned ${page.status}`);
-    save(root, url, page.body);
+    save(root, url, page.bytes);
     console.log(`  ${page.status}  ${url}  (last-modified ${page.headers.get('last-modified') ?? 'n/a'})`);
     for (const [, ref] of page.body.matchAll(/(?:href|src)="(\/[^"#?]+\.[a-z0-9]+)"/gi)) if (ref !== undefined) assets.add(ref);
   }
   for (const ref of assets) {
     const asset = await get(`${SITE_URL}${ref}`);
     if (asset.status !== 200) failures.push(`${ref} returned ${asset.status}`);
-    save(root, `${SITE_URL}${ref}`, asset.body);
+    save(root, `${SITE_URL}${ref}`, asset.bytes);
   }
 
   // 3. Plain http:// must redirect to https:// — a 200 means HTTPS enforcement was switched off.

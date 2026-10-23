@@ -29,8 +29,8 @@ const SALT = 'nasikabbas.com/private-terms/v1';
 /**
  * One hashed term: a run of `words` normalised words, or a run of `digits` digits.
  *
- * Deliberately carries **no category**: a public label such as "medical" or "availability" would
- * disclose, by itself, the kind of thing being hidden. A readable explanation of a match comes from
+ * Deliberately carries **no category**: a public category label would disclose, by itself, the kind
+ * of thing being hidden. A readable explanation of a match comes from
  * the private plaintext list, when it is present locally ({@link loadPlaintext}).
  */
 export interface HashedTerm {

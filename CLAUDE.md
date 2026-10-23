@@ -18,10 +18,9 @@
   recruiter or HR partner who reads first; technical at `/technical/` is for the engineer who reads
   second. Both render from the same entries. Prose never types a number — it embeds `{figure_id}` —
   so the versions cannot disagree about a value.
-- **Private, never in this repo:** `.wh/` (the working area — career plan, finances, working history)
-  and `source-material/` (confidential decks, personal essays, employer material). Both excluded via
-  `.git/info/exclude`, **not** `.gitignore` — this repo is public, and a tracked ignore file publishes
-  the shape of a private convention to everyone who clones it.
+- **Private, never in this repo:** `.wh/` (a personal working area) and `source-material/` (reference
+  material). Both excluded via `.git/info/exclude`, **not** `.gitignore` — this repo is public, and a
+  tracked ignore file publishes the shape of a private convention to everyone who clones it.
 
 ## Private terms, and why this public repo never lists them
 
@@ -71,7 +70,8 @@ ships without the number it belongs to. When `caveat` is set the renderer
   then render its `notes()` and `sources()` — so a page's limits and sources are complete regardless of
   the order Astro renders children in. Do not resolve figures inside a child component.
 - `src/lib/view.ts` — view models (timeline, proof cards) per register. `src/lib/profile.ts` — the one
-  place `profile.yaml` is loaded.
+  place `profile.yaml` is loaded. `src/lib/identity.ts` — the one place the line describing him (role,
+  employer, focus) is composed, for the pages and the share card alike.
 - `src/pages/` — routes. `src/layouts/`, `src/components/` — markup. `public/styles/` — the design system.
 - `scripts/` — build-time gates and tools. A check that matters belongs here, wired into `npm run
   check` or `npm run build`, not in a comment asking someone to remember. `check-dist.ts` gates the
@@ -98,6 +98,7 @@ npm run build     # static build to dist/, then check-dist over the built pages
 npm run dev       # local dev server
 npm run preview   # serve dist/ — a daemon in Astro 7; `npx astro preview stop` ends it
 npm run shots     # phone + desktop, light + dark screenshots of the served site
+npm run og-card   # re-render the share card after changing name, role, employer, focus or plain headline
 npm run check:live  # after a deploy: check-dist's gates over the pages the live domain serves
 npm run format    # prettier
 ```
@@ -106,6 +107,19 @@ npm run format    # prettier
 and deploy start independently — a check only in `check` cannot stop a deploy. **Review a visual
 change with `npm run shots`**, never with Chrome's `--window-size`: that renders at ~504 px minimum and
 crops, producing clipped "phone" screenshots that look exactly like a layout bug.
+
+**The share card is a committed image, so `check-dist` guards it.** `public/og/card.png` is rendered
+by `npm run og-card` and committed, so the image that ships is the one that was looked at; a CI runner
+would draw it with its own fonts, unseen. Its stamp, `data/og-card.json` (generated, never edited by
+hand), records the words drawn and a seal over those words and the image. `check-dist` fails the
+build in any of these cases:
+- the words disagree with the profile;
+- the image is not a 1200×630 PNG;
+- the seal does not match;
+- a page's `og:image` is not the seal-versioned URL.
+
+A title change therefore cannot ship with an old card, and link previews refetch a changed one. The
+fix is always `npm run og-card`, then commit both files.
 
 `npm run check` prints **every** non-verified field and every caveated figure on each run, pass or fail.
 That list is the work queue: a reported gap stays a task, a silent one ages into apparent fact.
@@ -137,10 +151,11 @@ curl -s -o /dev/null -w '%{http_code}\n' https://nasikabbas.com/styles/global.cs
   near expiry), DNS through the domain's own nameservers and four public resolvers, then
   `check:live`. When someone reports the site down, read the error type first and follow the deploy
   skill's triage table: a DNS error with a green Uptime run is the visitor's network, not the site.
-- **`public/CNAME` must agree with `SITE_URL`.** The apex domain is functional, not decorative:
-  `robots.txt` is only ever read at a domain root, so on a Pages sub-path an AI-crawler allowlist is
-  inert — and being retrievable when someone asks an assistant about this person is one reason the site
-  exists.
+- **`public/CNAME` must agree with `SITE_URL`.** The apex domain is functional, not decorative. No
+  `robots.txt` is served, so every crawler, AI assistants included, may read the site — being
+  retrievable when someone asks an assistant about this person is one reason the site exists. A
+  `robots.txt`, if one is ever added, is only read at a domain root, so on a Pages sub-path it would be
+  inert.
 
 ---
 

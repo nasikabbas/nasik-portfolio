@@ -103,12 +103,14 @@ export const ProfileSchema = z
   .object({
     person: z.object({
       name: z.string().min(1),
-      /** The job title a recruiter will search for. */
+      /** His job title as his employer has it: the page title, and the start of the line above his name. */
       role: z.string().min(1),
+      /** Where the role is held, as the line above his name and the structured data name it. */
+      employer: z.string().min(1),
+      /** What else he is building, in a few words, after the employer in the line above his name. */
+      focus: z.string().min(1),
       /** Country only — his instruction: the site never names his current city. */
       location: z.string().min(1),
-      /** Whether he will move for a role; stated because it decides international applications. */
-      relocation: z.string().min(1),
       email: z.email(),
       pronouns: z.string().min(1),
       links: z.object({ linkedin: z.url(), github: z.url() }),
@@ -116,10 +118,7 @@ export const ProfileSchema = z
       headline: z.object({ plain: z.string().min(1), technical: z.string().min(1) }),
       /** Two or three sentences under the headline, per register. */
       summary: z.object({ plain: z.array(LineSchema).min(1), technical: z.array(LineSchema).min(1) }),
-      /**
-       * The contact line. Deliberately carries no availability date: a stated date signals
-       * urgency and costs leverage (his decision, 2026-09-27). `check-dist` enforces it.
-       */
+      /** The contact line, above the email and profile links. */
       contact: z.string().min(1),
     }),
     sources: z.record(Id, SourceSchema),

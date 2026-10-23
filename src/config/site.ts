@@ -14,10 +14,11 @@ export const SITE_URL = 'https://nasikabbas.com';
  * Sub-path the site is served under, with a leading and no trailing slash.
  * Empty when served from a domain root, which is the case here.
  *
- * The apex domain is not decoration. `robots.txt` is only ever read at a domain root, so
- * on a `user.github.io/project` sub-path the AI-crawler allowlist is inert — and being
- * retrievable when someone asks an assistant about this person is one of the reasons the
- * site exists. `public/CNAME` binds the domain; this constant must agree with it.
+ * The apex domain is not decoration. No `robots.txt` is served, so every crawler, AI
+ * assistants included, may read the site — being retrievable when someone asks an assistant
+ * about this person is one of the reasons the site exists — and a `robots.txt`, if one is
+ * ever added, is only read at a domain root. `public/CNAME` binds the domain; this constant
+ * must agree with it.
  */
 export const BASE_PATH = '';
 
