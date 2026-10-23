@@ -19,16 +19,11 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { findChrome } from './chrome';
+
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4321';
 const OUT = process.argv[3] ?? join(process.cwd(), 'shots');
 const PORT = 9333;
-
-const CHROME_CANDIDATES = [
-  'C:/Program Files/Google/Chrome/Application/chrome.exe',
-  'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
-  '/usr/bin/google-chrome',
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-];
 
 const PAGES: ReadonlyArray<{ name: string; path: string }> = [
   { name: 'home', path: '/' },
@@ -112,9 +107,7 @@ async function assertServed(): Promise<void> {
 
 async function main(): Promise<void> {
   await assertServed();
-  const { existsSync } = await import('node:fs');
-  const chrome = CHROME_CANDIDATES.find((p) => existsSync(p));
-  if (chrome === undefined) throw new Error('No Chrome or Edge found; add its path to CHROME_CANDIDATES.');
+  const chrome = findChrome();
   mkdirSync(OUT, { recursive: true });
 
   const proc = spawn(chrome, [
