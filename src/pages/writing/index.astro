@@ -1,16 +1,18 @@
 ---
 /**
- * Writing, plain register: what each essay is about, in plain words, with a link to the essay.
+ * Writing, plain register: what each essay and each note is about, in plain words, with a link.
  *
- * The essays themselves live in the technical register — their subject is the vocabulary the plain
- * register rejects — so this page is their counterpart: each one named and summarised for a reader
- * who does not work in software (ADR 002).
+ * The essays and notes themselves live in the technical register — their subject is the vocabulary
+ * the plain register rejects — so this page is their counterpart: each one named and summarised for
+ * a reader who does not work in software (ADR 002).
  */
 import { path } from '../../config/site';
 import Base from '../../layouts/Base.astro';
 import { ESSAYS, longDate } from '../../lib/essays';
+import { NOTES } from '../../lib/notes';
 
 const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published));
+const notes = [...NOTES].sort((a, b) => b.published.localeCompare(a.published));
 ---
 
 <Base
@@ -25,8 +27,8 @@ const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published)
       <p class="eyebrow">Writing</p>
       <h1>What we're learning</h1>
       <p class="lede">
-        Short essays on what holds up when AI does real work. They are written for engineers, so each one
-        has a plain summary here.
+        Short essays on what holds up when AI does real work, and shorter notes on what is being
+        read and tried now. They are written for engineers, so each one has a plain summary here.
       </p>
     </div>
   </section>
@@ -42,6 +44,27 @@ const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published)
               <h3>{e.plainTitle}</h3>
               <p>{e.plainSummary}</p>
               <span class="feature__cta">Read the essay →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="notes-heading">
+    <div class="wrap">
+      <h2 id="notes-heading">The notes</h2>
+      <p>A few hundred words each, with a date and where the thinking stands.</p>
+      <div class="essay-list">
+        {
+          notes.map((n) => (
+            <a class="feature" href={path(`/technical/notes/${n.slug}/`)}>
+              <p class="eyebrow">
+                {longDate(n.published)} · {n.status}
+              </p>
+              <h3>{n.plainTitle}</h3>
+              <p>{n.plainSummary}</p>
+              <span class="feature__cta">Read the note →</span>
             </a>
           ))
         }

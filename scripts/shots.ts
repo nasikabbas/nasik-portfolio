@@ -34,9 +34,16 @@ const PAGES: ReadonlyArray<{ name: string; path: string }> = [
   { name: 'tech-writing', path: '/technical/writing/' },
   { name: 'essay-knowledge', path: '/technical/writing/knowledge-does-not-cross/' },
   { name: 'essay-authority', path: '/technical/writing/whose-opinion-counts/' },
+  { name: 'note-form', path: '/technical/notes/the-form-said-no-ai/' },
 ];
 
-const DEVICES: ReadonlyArray<{ name: string; width: number; height: number; scale: number; mobile: boolean }> = [
+const DEVICES: ReadonlyArray<{
+  name: string;
+  width: number;
+  height: number;
+  scale: number;
+  mobile: boolean;
+}> = [
   { name: 'phone', width: 390, height: 844, scale: 2, mobile: true },
   { name: 'desktop', width: 1280, height: 900, scale: 1, mobile: false },
 ];
@@ -50,7 +57,11 @@ class Cdp {
 
   private constructor(private readonly ws: WebSocket) {
     ws.addEventListener('message', (event) => {
-      const msg = JSON.parse(String(event.data)) as { id?: number; result?: unknown; error?: { message: string } };
+      const msg = JSON.parse(String(event.data)) as {
+        id?: number;
+        result?: unknown;
+        error?: { message: string };
+      };
       if (msg.id === undefined) return;
       const resolve = this.pending.get(msg.id);
       this.pending.delete(msg.id);
@@ -146,7 +157,9 @@ async function main(): Promise<void> {
         mobile: device.mobile,
       });
       for (const scheme of SCHEMES) {
-        await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: scheme }] });
+        await cdp.send('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-color-scheme', value: scheme }],
+        });
         for (const page of PAGES) {
           await cdp.send('Page.navigate', { url: `${BASE}${page.path}` });
           await sleep(900);
@@ -154,10 +167,13 @@ async function main(): Promise<void> {
             expression: 'document.documentElement.scrollWidth - window.innerWidth',
             returnByValue: true,
           });
-          const { result: height } = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
-            expression: 'document.documentElement.scrollHeight',
-            returnByValue: true,
-          });
+          const { result: height } = await cdp.send<{ result: { value: number } }>(
+            'Runtime.evaluate',
+            {
+              expression: 'document.documentElement.scrollHeight',
+              returnByValue: true,
+            },
+          );
           // Slices of about one and a quarter screens: a whole page in one image is too tall to
           // read once scaled down, and a slice is roughly what a reader sees before scrolling.
           const slice = Math.round(device.height * 1.25);
@@ -167,13 +183,24 @@ async function main(): Promise<void> {
             const shot = await cdp.send<{ data: string }>('Page.captureScreenshot', {
               format: 'png',
               captureBeyondViewport: true,
-              clip: { x: 0, y, width: device.width, height: Math.min(slice, height.value - y), scale: 1 },
+              clip: {
+                x: 0,
+                y,
+                width: device.width,
+                height: Math.min(slice, height.value - y),
+                scale: 1,
+              },
             });
-            const file = join(OUT, `${page.name}-${device.name}-${scheme}-${String(i + 1).padStart(2, '0')}.png`);
+            const file = join(
+              OUT,
+              `${page.name}-${device.name}-${scheme}-${String(i + 1).padStart(2, '0')}.png`,
+            );
             writeFileSync(file, Buffer.from(shot.data, 'base64'));
           }
           const overflow = result.value > 0 ? `  !! horizontal overflow ${result.value}px` : '';
-          console.log(`${page.name}-${device.name}-${scheme}: ${height.value}px tall, ${count} slices${overflow}`);
+          console.log(
+            `${page.name}-${device.name}-${scheme}: ${height.value}px tall, ${count} slices${overflow}`,
+          );
         }
       }
     }

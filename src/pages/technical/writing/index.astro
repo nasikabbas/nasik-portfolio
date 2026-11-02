@@ -1,13 +1,16 @@
 ---
 /**
- * Writing, technical register: the essays, newest first. Titles, summaries and dates come from
- * `src/lib/essays.ts`, so this list cannot disagree with the essays themselves.
+ * Writing, technical register: the essays and the notes, newest first. Titles, summaries, dates and
+ * statuses come from `src/lib/essays.ts` and `src/lib/notes.ts`, so these lists cannot disagree with
+ * the pieces themselves.
  */
 import { path } from '../../../config/site';
 import Base from '../../../layouts/Base.astro';
 import { ESSAYS, longDate } from '../../../lib/essays';
+import { NOTES } from '../../../lib/notes';
 
 const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published));
+const notes = [...NOTES].sort((a, b) => b.published.localeCompare(a.published));
 ---
 
 <Base
@@ -19,11 +22,12 @@ const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published)
 >
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Essays</p>
+      <p class="eyebrow">Essays and notes</p>
       <h1>Writing</h1>
       <p class="lede">
-        Notes from putting AI agents to work, written up when they hold. Each one says where its numbers
-        come from and what it doesn't know yet.
+        Essays from putting AI agents to work, written up when they hold, and shorter notes on what
+        is being read and tested now. Each one says where its numbers come from and what it doesn't
+        know yet.
       </p>
     </div>
   </section>
@@ -39,6 +43,30 @@ const essays = [...ESSAYS].sort((a, b) => b.published.localeCompare(a.published)
               <h3>{e.title}</h3>
               <p>{e.dek}</p>
               <span class="feature__cta">Read the essay →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="notes-heading">
+    <div class="wrap">
+      <h2 id="notes-heading">Notes</h2>
+      <p>
+        A few hundred words each, dated, with where the thinking stands: reading, an idea, an
+        experiment planned, or a result.
+      </p>
+      <div class="essay-list">
+        {
+          notes.map((n) => (
+            <a class="feature" href={path(`/technical/notes/${n.slug}/`)}>
+              <p class="eyebrow">
+                Note · {longDate(n.published)} · {n.status}
+              </p>
+              <h3>{n.title}</h3>
+              <p>{n.dek}</p>
+              <span class="feature__cta">Read the note →</span>
             </a>
           ))
         }

@@ -1,0 +1,93 @@
+---
+/**
+ * Note: the application form's "don't use AI to draft your answers" line, and who that line
+ * quietly selects against.
+ *
+ * His own experience, in his voice, written up on 2026-11-02 from his brief of the same day.
+ * No figure appears here, so no ledger notes are rendered; the piece names no person, employer,
+ * fellowship or organisation. The closing line discloses how it was written, and that line is
+ * the argument's spine — remove it and the note no longer says what it means.
+ */
+import EssayBody from '../../../components/EssayBody.astro';
+import Rich from '../../../components/Rich.astro';
+import { SITE_URL, path } from '../../../config/site';
+import Base from '../../../layouts/Base.astro';
+import { longDate, type Block } from '../../../lib/essays';
+import { FigureLedger } from '../../../lib/figures';
+import { note } from '../../../lib/notes';
+import { profile } from '../../../lib/profile';
+
+const meta = note('the-form-said-no-ai');
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+const p = (text: string): Block => ({ kind: 'p', parts: r(text) });
+
+const blocks: Block[] = [
+  p(
+    'The form was for a research fellowship in AI safety. Near the top of the questions, in a friendly tone, it said: we are looking for your authentic voice, so please do not use AI tools to draft your answers. Brief and direct is fine. Grammar will not count against you.',
+  ),
+  p(
+    'It is a reasonable request, and I like the people who wrote it for making it. They want to hear a person, not a model. So do I, when I read.',
+  ),
+  p(
+    'What stopped me was a different thought. The line assumes that everyone who has something worth saying can also get it onto the page in a form a reviewer can follow. It treats clear writing as a window onto clear thinking. For most of my life it was a wall in front of it.',
+  ),
+  p(
+    'I am autistic and I have ADHD. I grew up in Pakistan, from a humble background, in a religious minority. I speak four languages fluently, English among them, and I think in all of them at once: some ideas arrive in English, some in Urdu, some in Persian. Language was never the problem. The problem is the context each language is spoken in, its conventions and its undertone, and the fact that my thinking is a network, not a line. I always knew what I was being asked. What I did not know was how to answer it in all its intricacies, on a page, in an order another person could use. Distilling a web of thought into sentences filled me with dread. I learnt to do it, slowly, over years.',
+  ),
+  p(
+    'None of that was a lack of ideas. It was a lack of the one skill that forms like this one quietly test: taking a complicated thought and laying it out in plain sentences, in the reader’s order, without years of practice at exactly that. People who grew up around that practice do not notice they are being tested on it. People who did not grow up around it mostly do not apply.',
+  ),
+  p(
+    'That is the part I keep coming back to. Someone like me, in the first bad years of a career, would not have applied for this fellowship. Not because the work was beyond him. He would not have understood from the page what was being researched, or why it mattered, and he would not have believed he could write a hundred and fifty words about his own project that a stranger would take seriously. The form would not have rejected him. He would have rejected himself.',
+  ),
+  p(
+    'Today I am the person my company turns to when it needs AI to work in production. Part of how I got here is that, for a while now, I have had a writing partner that does not get tired of me. I brainstorm with it in whatever order the ideas arrive, refine them, ask how they connect, and then I want them written. That works because I built the structure it works inside: a scaffold that keeps track of my thoughts, and of everything flying between them, so nothing is lost while I think. The thinking is mine. The order is mine too; I designed it. What the assistant supplies is the sentences, and I read every line and change what is not mine.',
+  ),
+  p(
+    'So here is what I did with the form. I wrote the answers myself, in my own English, and in the last hour before the deadline I used the assistant to tighten them. I said so, in the application itself. And here, on my own site, I will keep writing the way that works for me, and say so at the bottom of each piece.',
+  ),
+  p(
+    'I am not arguing against the rule. I am arguing that the rule is a sample of a bigger pattern, one that has followed me from school into work: we keep mistaking fluency for capability, in people and, lately, in machines. That pattern is also what I want to study. The notes that follow this one, as I add them over the coming days, are the thinking behind that: what I have read, what I think I have understood, and the small experiments I want to run, so that whoever reads my application can see the thinking and not just the sentences.',
+  ),
+  {
+    kind: 'quote',
+    parts: r(
+      'Written with an AI assistant, inside a structure I designed: I supplied the argument, the experience and the order; it supplied the sentences and cut the words I did not need; I read and changed every line.',
+    ),
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: meta.title,
+  description: meta.dek,
+  datePublished: meta.published,
+  author: { '@type': 'Person', name: profile.person.name, url: SITE_URL },
+  url: `${SITE_URL}${path(`/technical/notes/${meta.slug}/`)}`,
+};
+---
+
+<Base
+  title={meta.title}
+  description={meta.dek}
+  path={`/technical/notes/${meta.slug}/`}
+  register="technical"
+  counterpart="/writing/"
+  jsonLd={jsonLd}
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Note · {longDate(meta.published)} · {meta.status}</p>
+        <h1>{meta.title}</h1>
+        <p class="lede lede--long"><Rich parts={r(meta.dek)} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Note">
+      <EssayBody blocks={blocks} />
+    </section>
+  </article>
+</Base>
