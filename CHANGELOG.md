@@ -15,6 +15,18 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [6.1.0] — 2026-11-02
+
+**Why MINOR:** new content and a new surface; nothing published changes meaning.
+
+### Added
+- **Notes.** Beside the essays, a shorter kind of writing: a few hundred words each, dated, and
+  marked with where the thinking stands (reading, an idea, an experiment planned, or a result), so a
+  reader can tell a question from a finding. The first, *The form said: don't use AI to write this*,
+  is about an application form's request for answers written without AI, and who that line quietly
+  selects against. Notes live under `/technical/notes/`; both writing pages list them, the plain page
+  in plain words.
+
 ## [6.0.0] — 2026-10-23
 
 **Why MAJOR:** a published statement is withdrawn.

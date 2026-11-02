@@ -4,7 +4,7 @@ Portfolio, case studies and résumé system for **Nasik Abbas**, generated from 
 truth and published at **[nasikabbas.com](https://nasikabbas.com)**.
 
 Live: the site in two versions (plain English and technical), the full career, a case study, an
-evaluation page and two essays. The current version, and what each release changed, is in
+evaluation page, two essays and the notes. The current version, and what each release changed, is in
 [CHANGELOG.md](CHANGELOG.md). Not built yet: the résumé variants, `llms.txt` and the LinkedIn pack
 described below.
 
@@ -64,8 +64,10 @@ src/lib/profile.ts         loads and parses profile.yaml once, for every page
 src/lib/identity.ts        the one-line description of him (above his name, on the share card), built once
 src/layouts/Base.astro     head (with the share card's og:image), header with the register switch, footer
 src/components/            Rich (prose with figures), ProofCards, Timeline, Notes
+src/lib/essays.ts          the one list of essays; src/lib/notes.ts the one list of notes, each with its status
 src/pages/                 /  /work/padelgpt/  /writing/  /technical/  /technical/evaluation/
                            /technical/writing/ and one page per essay under it
+                           /technical/notes/<slug>/ one page per note; both writing pages list them
 public/styles/global.css   the design system — tokens for light and dark
 public/CNAME               binds the apex domain; must agree with SITE_URL
 public/og/card.png         the share card, rendered by scripts/og-card.ts and committed

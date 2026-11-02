@@ -72,6 +72,10 @@ ships without the number it belongs to. When `caveat` is set the renderer
 - `src/lib/view.ts` — view models (timeline, proof cards) per register. `src/lib/profile.ts` — the one
   place `profile.yaml` is loaded. `src/lib/identity.ts` — the one place the line describing him (role,
   employer, focus) is composed, for the pages and the share card alike.
+- `src/lib/essays.ts` and `src/lib/notes.ts` — the one list each of essays and of notes: slug, title,
+  date, the note's status, and the plain title and summary the plain writing page shows. A piece not
+  listed there cannot render, so a title or date is written once. A **note** is a few hundred words
+  with a status (reading, idea, experiment planned, result); an **essay** argues something that holds.
 - `src/pages/` — routes. `src/layouts/`, `src/components/` — markup. `public/styles/` — the design system.
 - `scripts/` — build-time gates and tools. A check that matters belongs here, wired into `npm run
   check` or `npm run build`, not in a comment asking someone to remember. `check-dist.ts` gates the
