@@ -15,6 +15,13 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [6.1.1] — 2026-11-02
+
+**Why PATCH:** one wording change; nothing a reader relies on changes meaning.
+
+### Changed
+- The first note now says "I am autistic and ADHD", as its author says it, in place of "I have ADHD".
+
 ## [6.1.0] — 2026-11-02
 
 **Why MINOR:** new content and a new surface; nothing published changes meaning.
