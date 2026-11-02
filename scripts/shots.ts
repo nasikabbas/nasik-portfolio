@@ -21,7 +21,9 @@ import { join } from 'node:path';
 
 import { findChrome } from './chrome';
 
-const BASE = process.argv[2] ?? 'http://127.0.0.1:4321';
+// `localhost`, not `127.0.0.1`: Astro 7's preview daemon answers on the name it prints, which on a
+// machine where that name resolves to IPv6 first is not reachable at 127.0.0.1 at all (2026-11-02).
+const BASE = process.argv[2] ?? 'http://localhost:4321';
 const OUT = process.argv[3] ?? join(process.cwd(), 'shots');
 const PORT = 9333;
 
