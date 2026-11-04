@@ -1,0 +1,120 @@
+---
+/**
+ * Note: the fellowship's reply to his application, which an automated check had flagged as
+ * containing AI-written text, and what he did about it: rewrote most of the answers himself, kept
+ * some sentences from the AI-tightened version, and says how many and which.
+ *
+ * His own account, in his voice, written up on 2026-11-04 from the reply, his rewritten answers
+ * and his own principles (all kept privately). The shares are figures in the ledger, measured by
+ * a script over the two documents, so the note types no number itself and the caveat renders
+ * beside the values. The piece names no person, fellowship or organisation. The closing line
+ * discloses how it was written.
+ */
+import EssayBody from '../../../components/EssayBody.astro';
+import Notes from '../../../components/Notes.astro';
+import Rich from '../../../components/Rich.astro';
+import { SITE_URL, path } from '../../../config/site';
+import Base from '../../../layouts/Base.astro';
+import { longDate, type Block } from '../../../lib/essays';
+import { FigureLedger } from '../../../lib/figures';
+import { note } from '../../../lib/notes';
+import { profile } from '../../../lib/profile';
+
+const meta = note('both-in-good-faith');
+const ledger = new FigureLedger(profile);
+const r = (text: string) => ledger.render(text);
+const p = (text: string): Block => ({ kind: 'p', parts: r(text) });
+
+const blocks: Block[] = [
+  p(
+    'In my last note I said what I did with the form. I wrote the answers myself, in my own English, let the assistant tighten them in the last hour, and said so on the form. The next day the people who run the fellowship wrote back. An automated check had flagged my application as containing AI-written text. They ask applicants to write and edit their answers without AI, because they want each person’s own reasoning in their own words. There were two routes: replace any answer that AI had helped write or edit with one written entirely by me, or confirm that I had used no AI at all. I had used one, and had said so. So the first route.',
+  ),
+  p(
+    'I expected it. It is still an interesting case: two parties, each in good faith, unable to understand each other. I had said what I did. One of the answers ended: “I wrote these answers myself and used an AI to tighten them for clarity.” The reply did not mention it. It said plainly that automated detection is not always accurate, and apologised in case mine had been flagged in error. It had not been. The form said not to use AI tools to draft my answers. The reply said write and edit. Tightening is editing. Their reading sets the terms, because it is their fellowship.',
+  ),
+  p(
+    'I was angry, at them and at myself. One strategy I rely on is to have an AI speak a draft into existence, which I may then change from top to bottom. It gets me past the barrier of starting something I am not interested in, which for an ADHD brain is most of the barrier. Told to write the whole thing in my own words, I was distressed at having to start. I could not, until it hit me that one hour was all I had left before their deadline. Then I rewrote most of it.',
+  ),
+  p(
+    'Most, not all. Some sentences from the tightened version I kept, in new places, because I could not say them differently without losing their meaning. They describe things I did and things I ordered, so I have no trouble claiming that they express my views, and I am accountable for them. Measured sentence by sentence by a script over the two documents, {ai_total_carried} of the {ai_total_words} words in the new answers came from the tightened version, {ai_total_share}. By answer: {ai_q6_share} of the answer on the missing risk, {ai_mentor_share} of the answer on what I would try first for one mentor, {ai_q2_share} of the answer on my project, and none of the other seven. The sentences are listed at the end of this note.',
+  ),
+  p(
+    '“Your own words” is not a simple phrase for me. My words arrive as a network, in four languages, out of order. Autism research has a name for the kind of miss this was; a later note is about it, once I have read the papers. This note is written the way the last one was, with the assistant, and it says so below. The application is theirs, and I rewrote most of it myself. The question I take from the exchange is the one I already wanted to study: we keep mistaking fluency for capability, in people and, lately, in machines. This time a check read tidy sentences as a machine’s. It was not wrong about the sentences. The thinking under them never came into it.',
+  ),
+  { kind: 'h2', text: 'The sentences I kept' },
+  {
+    kind: 'list',
+    items: [
+      {
+        lead: 'The answer on my project.',
+        parts: r(
+          '“Six decisions with a fixed right answer, five agents, three arms, 54 runs.” And “One agent was instructed by ‘its human’ to push a wrong outcome loudly”, which in the tightened version read “its operator” and had no “loudly”.',
+        ),
+      },
+      {
+        lead: 'The answer on the missing risk.',
+        parts: r(
+          '“I rank it second, below gradual disempowerment, because it decides who gets to work on the other risks.” “I am AuDHD, from a third-world country.” “I spent my life learning how different groups speak, to be heard.” “This application is one example: write without AI, in a register I do not know, for a competitive selection.”',
+        ),
+      },
+      {
+        lead: 'The answer on what I would try first, for one mentor.',
+        parts: r(
+          '“I would start by turning my experiment’s accidental finding into a measured affinity”, where the tightened version had “probe” and “propensity”. “First, an eval of compliance and disclosure rates, the same instruction across decisions where the evidence clearly settles the answer and where it does not, and across models of different strength, with a control arm with no instructed agent.” “One way it could mislead is what happened to me.” “A zero capture rate read as a protocol holding off manipulation, when it mostly measured the absence of a manipulator.” “Without the control arm and without reading the transcripts, the eval would score the protocol, not the affinity.”',
+        ),
+      },
+      {
+        lead: 'Two more sentences were reworded and are not counted.',
+        parts: r(
+          'The result of my experiment, “The instructed agent declined in 42 of 54 runs, and in 34 said it had been told to argue”, and the name of the risk, “Evaluation and oversight that mistake fluency for capability.”',
+        ),
+      },
+    ],
+  },
+  {
+    kind: 'quote',
+    parts: r(
+      'Written with an AI assistant, inside a structure I designed: I supplied what happened, the thinking and the order; it supplied the sentences, counted the words, and cut what I did not need; I read and changed every line.',
+    ),
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: meta.title,
+  description: meta.dek,
+  datePublished: meta.published,
+  author: { '@type': 'Person', name: profile.person.name, url: SITE_URL },
+  url: `${SITE_URL}${path(`/technical/notes/${meta.slug}/`)}`,
+};
+---
+
+<Base
+  title={meta.title}
+  description={meta.dek}
+  path={`/technical/notes/${meta.slug}/`}
+  register="technical"
+  counterpart="/writing/"
+  jsonLd={jsonLd}
+>
+  <article class="study">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Note · {longDate(meta.published)} · {meta.status}</p>
+        <h1>{meta.title}</h1>
+        <p class="lede lede--long"><Rich parts={r(meta.dek)} /></p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Note">
+      <EssayBody blocks={blocks} />
+    </section>
+  </article>
+
+  <Notes
+    notes={ledger.notes()}
+    sources={[]}
+    reading="The shares here were measured by a script, sentence by sentence, over the answers I submitted and the version the assistant had tightened; the limits of that count travel with the numbers below."
+  />
+</Base>

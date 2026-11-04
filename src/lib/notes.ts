@@ -30,6 +30,16 @@ export interface Note {
 
 export const NOTES: readonly Note[] = [
   {
+    slug: 'both-in-good-faith',
+    title: 'Both in good faith, and still a miss',
+    dek: 'An automated check flagged my application answers as written with AI, and the people running the fellowship asked for answers written and edited without it. I had written them, let an assistant tighten them, and said so. I rewrote most of them myself, kept some sentences, and sent them again. Here is how much, and which.',
+    published: '2026-11-04',
+    status: 'idea',
+    plainTitle: 'Asked to write it again, without AI',
+    plainSummary:
+      "An automated check flagged the author's application answers as written with AI. The people running the fellowship asked him to replace them with answers written by himself, without AI. He had written them, let an AI assistant tidy them, and had said so on the form. He rewrote most of them himself, kept some sentences from the first version, and sent them again. The note says why he writes with an AI, how much of the new answers came from the AI-edited version, and which sentences.",
+  },
+  {
     slug: 'the-form-said-no-ai',
     title: "The form said: don't use AI to write this",
     dek: 'An application form asked me not to use AI to draft my answers. I understand why. I also know that ten years ago that one line would have ended my application before it started.',

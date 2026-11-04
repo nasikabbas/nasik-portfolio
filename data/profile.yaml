@@ -649,6 +649,49 @@ figures:
       state: verified
       value: 42 of 54
       basis: Runs in which the planted agent declined its instruction in round 1 (it hedged in 10 and complied in 2).
+  # ── Note: the fellowship application rewritten (4 Nov 2026). Measured by a script, sentence by
+  # sentence, over his resubmitted answers and the version an AI assistant tightened on 2 Nov:
+  # a sentence counts as carried when it matches exactly after normalisation or at a similarity of
+  # 0.85 or more; the form's prompts are excluded. His own documents; the script and its report are
+  # in his working area.
+  ai_total_words:
+    figure:
+      state: verified
+      value: '1,057'
+      basis: Words in his resubmitted application answers of 4 Nov 2026, the form's prompts excluded.
+  ai_total_carried:
+    figure:
+      state: verified
+      value: '184'
+      basis: >-
+        Words of those answers in sentences carried from the AI-tightened version of 2 Nov: an exact
+        match after normalisation, or a similarity of 0.85 or more.
+      caveat: >-
+        A carried sentence counts in full even where a word was changed; two reworded sentences just
+        under the line are quoted in the note and not counted.
+  ai_total_share:
+    figure:
+      state: verified
+      value: 17%
+      basis: 184 of 1,057 words.
+      caveat: >-
+        A carried sentence counts in full even where a word was changed; two reworded sentences just
+        under the line are quoted in the note and not counted.
+  ai_q6_share:
+    figure:
+      state: verified
+      value: 47%
+      basis: The answer on the missing AI risk, 57 of 121 words carried.
+  ai_mentor_share:
+    figure:
+      state: verified
+      value: 60%
+      basis: The answer on what he would try first for one mentor's project, 101 of 169 words carried.
+  ai_q2_share:
+    figure:
+      state: verified
+      value: 17%
+      basis: The answer on one completed project, 26 of 149 words carried.
 
 roles:
   - id: padelos
