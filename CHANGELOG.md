@@ -15,6 +15,18 @@ and on a site whose argument is honest measurement that is the one thing that ca
 
 ## [Unreleased]
 
+## [6.2.0] — 2026-11-04
+
+**Why MINOR:** new content; nothing published changes meaning.
+
+### Added
+- **A second note, *Both in good faith, and still a miss*.** An automated check flagged the author's
+  application answers as containing AI-written text, and the people running the fellowship asked for
+  answers written and edited without AI. The note says what he had done and disclosed, what the reply
+  asked, and what he did: rewrote most of the answers himself, kept some sentences from the
+  AI-edited version, and updated the application. It gives the share of such sentences per answer and in
+  total, measured by script, and lists them.
+
 ## [6.1.1] — 2026-11-02
 
 **Why PATCH:** one wording change; nothing a reader relies on changes meaning.
