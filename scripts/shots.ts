@@ -37,6 +37,7 @@ const PAGES: ReadonlyArray<{ name: string; path: string }> = [
   { name: 'essay-knowledge', path: '/technical/writing/knowledge-does-not-cross/' },
   { name: 'essay-authority', path: '/technical/writing/whose-opinion-counts/' },
   { name: 'note-form', path: '/technical/notes/the-form-said-no-ai/' },
+  { name: 'note-faith', path: '/technical/notes/both-in-good-faith/' },
 ];
 
 const DEVICES: ReadonlyArray<{
